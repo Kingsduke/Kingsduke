@@ -1,0 +1,2278 @@
+<!DOCTYPE html>
+<!-- Dukes Chess™ — The Power of the Shield | Kooch and Gooch Games Inc. -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dukes Chess™ — The Power of the Shield | Kooch and Gooch Games</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@900&family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════
+   DUKES CHESS — DESIGN SYSTEM
+   Aesthetic: Medieval Luxury / Dark Regalia
+   Dark navy + deep burgundy + hammered gold
+═══════════════════════════════════════════════════ */
+:root {
+  --navy:        #0e1628;
+  --navy2:       #141e33;
+  --navy3:       #1c2840;
+  --navy4:       #243050;
+  --burgundy:    #5a1020;
+  --burgundy2:   #7a1830;
+  --gold:        #c8922a;
+  --gold2:       #e0b040;
+  --gold3:       #f0c850;
+  --gold-dim:    #8a6018;
+  --cream:       #f0e4c0;
+  --cream2:      #e0d0a8;
+  --cream3:      #c8b888;
+  --white:       #ffffff;
+  --sq-light:    #c8a060;
+  --sq-dark:     #6a3c18;
+  --sq-hl-l:     #e8d040;
+  --sq-hl-d:     #b8a010;
+  --sq-move:     rgba(40,200,80,0.42);
+  --sq-cap:      rgba(220,40,40,0.55);
+  --sq-check:    rgba(220,20,20,0.72);
+  --shadow:      rgba(0,0,0,0.7);
+  --glow-gold:   rgba(200,146,42,0.4);
+
+  --font-title:  'Cinzel Decorative', serif;
+  --font-ui:     'Cinzel', serif;
+  --font-body:   'EB Garamond', serif;
+
+  --sq-size:     clamp(44px, 6.8vw, 68px);
+  --piece-size:  clamp(36px, 5.6vw, 58px);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--navy);
+  color: var(--cream);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  overflow-x: hidden;
+  /* Subtle parchment grain texture overlay */
+  background-image:
+    radial-gradient(ellipse 80% 50% at 15% 10%, rgba(90,16,32,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 85% 90%, rgba(200,146,42,0.1) 0%, transparent 55%),
+    radial-gradient(ellipse 100% 80% at 50% 50%, rgba(14,22,40,0) 0%, rgba(14,22,40,0.4) 100%);
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--navy2); }
+::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 3px; }
+
+/* ── Page shell ── */
+.page { display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+
+/* ═══════════════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════════════ */
+.site-header {
+  width: 100%;
+  text-align: center;
+  padding: 28px 20px 16px;
+  position: relative;
+  border-bottom: 1px solid rgba(200,146,42,0.2);
+  background: linear-gradient(180deg, rgba(14,22,40,0.95) 0%, transparent 100%);
+}
+
+.header-ornament {
+  display: flex; align-items: center; justify-content: center;
+  gap: 16px; margin-bottom: 10px;
+}
+.ornament-line {
+  height: 1px; width: 80px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.ornament-icon { color: var(--gold2); font-size: 1.1rem; }
+
+.site-title {
+  font-family: var(--font-title);
+  font-size: clamp(1.6rem, 4vw, 3rem);
+  font-weight: 900;
+  color: var(--gold2);
+  text-shadow:
+    0 0 30px rgba(200,146,42,0.5),
+    0 0 60px rgba(200,146,42,0.2),
+    2px 2px 6px rgba(0,0,0,0.8);
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.site-tagline {
+  font-family: var(--font-ui);
+  font-size: clamp(0.6rem, 1.2vw, 0.78rem);
+  color: var(--gold-dim);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+
+/* ═══════════════════════════════════════════════════
+   MAIN LAYOUT
+═══════════════════════════════════════════════════ */
+.game-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 900px;
+  padding: 16px 12px 32px;
+  gap: 14px;
+}
+
+/* ═══════════════════════════════════════════════════
+   CONTROL PANELS
+═══════════════════════════════════════════════════ */
+.panel {
+  background: linear-gradient(135deg, var(--navy2) 0%, var(--navy3) 100%);
+  border: 1px solid rgba(200,146,42,0.22);
+  border-radius: 5px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(200,146,42,0.08);
+}
+
+.top-panel {
+  display: flex; flex-wrap: wrap;
+  align-items: center; justify-content: space-between;
+  gap: 10px; padding: 10px 16px;
+  width: 100%;
+}
+
+/* Mode selector */
+.mode-selector { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.selector-label {
+  font-family: var(--font-ui); font-size: 0.62rem;
+  color: var(--gold-dim); letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.seg-btn {
+  font-family: var(--font-ui); font-size: 0.65rem;
+  padding: 4px 12px; cursor: pointer;
+  background: rgba(0,0,0,0.3);
+  color: var(--cream3); border: 1px solid rgba(200,146,42,0.2);
+  border-radius: 3px; transition: all 0.18s; letter-spacing: 0.06em;
+}
+.seg-btn:hover { border-color: var(--gold); color: var(--gold2); }
+.seg-btn.active {
+  background: linear-gradient(135deg, rgba(200,146,42,0.25), rgba(200,146,42,0.12));
+  border-color: var(--gold); color: var(--gold2);
+  box-shadow: 0 0 8px rgba(200,146,42,0.2);
+}
+
+/* Action buttons */
+.action-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn {
+  font-family: var(--font-ui); font-size: 0.65rem;
+  letter-spacing: 0.1em; padding: 6px 14px;
+  background: linear-gradient(135deg, var(--navy3), var(--navy2));
+  color: var(--gold2); border: 1px solid var(--gold-dim);
+  border-radius: 3px; cursor: pointer; transition: all 0.18s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+.btn:hover {
+  background: linear-gradient(135deg, var(--navy2), var(--navy4));
+  border-color: var(--gold2);
+  box-shadow: 0 0 12px var(--glow-gold);
+  transform: translateY(-1px);
+}
+.btn:active { transform: translateY(0); }
+.btn.danger { border-color: var(--burgundy2); color: #ff8888; }
+.btn.danger:hover { border-color: #ff6666; box-shadow: 0 0 10px rgba(220,40,40,0.3); }
+
+/* ═══════════════════════════════════════════════════
+   STATUS BAR
+═══════════════════════════════════════════════════ */
+.status-panel {
+  width: 100%;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 16px; flex-wrap: wrap; gap: 8px;
+}
+.status-turn {
+  font-family: var(--font-ui); font-size: 0.92rem;
+  font-weight: 600; color: var(--gold2);
+}
+.status-check {
+  font-family: var(--font-ui); font-size: 0.82rem;
+  color: #ff5555; font-weight: 700;
+  animation: pulse-red 0.65s ease-in-out infinite alternate;
+  display: none;
+}
+@keyframes pulse-red { from{opacity:1;} to{opacity:0.3;} }
+
+.clock-area { display: flex; gap: 16px; align-items: center; }
+.clock {
+  font-family: var(--font-ui); font-size: 0.82rem;
+  color: var(--cream3); letter-spacing: 0.08em;
+  background: rgba(0,0,0,0.3); padding: 3px 10px;
+  border-radius: 3px; border: 1px solid rgba(200,146,42,0.15);
+  min-width: 72px; text-align: center;
+}
+.clock.active { color: var(--gold2); border-color: var(--gold); }
+.clock.low { color: #ff6666; animation: pulse-red 1s ease-in-out infinite alternate; }
+
+/* Difficulty display */
+.diff-display {
+  font-family: var(--font-ui); font-size: 0.62rem;
+  color: var(--gold-dim); letter-spacing: 0.1em;
+}
+
+/* Thinking indicator */
+.thinking {
+  font-family: var(--font-ui); font-size: 0.68rem;
+  color: var(--gold2); letter-spacing: 0.1em;
+  display: none;
+}
+.thinking.show { display: block; animation: think 1.2s ease-in-out infinite; }
+@keyframes think {
+  0%,100% { opacity: 0.4; } 50% { opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════════════
+   CAPTURES ROW
+═══════════════════════════════════════════════════ */
+.captures-bar {
+  width: 100%; min-height: 28px;
+  display: flex; align-items: center; gap: 5px; flex-wrap: wrap;
+  padding: 3px 10px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 3px;
+  border: 1px solid rgba(200,146,42,0.1);
+}
+.cap-label {
+  font-family: var(--font-ui); font-size: 0.58rem;
+  color: var(--gold-dim); letter-spacing: 0.08em;
+  margin-right: 4px;
+}
+.cap-piece { font-size: 0.95rem; opacity: 0.75; }
+.material-score {
+  font-family: var(--font-ui); font-size: 0.6rem;
+  color: var(--gold-dim); margin-left: auto;
+}
+.material-score.ahead { color: var(--gold2); }
+
+/* ═══════════════════════════════════════════════════
+   BOARD
+═══════════════════════════════════════════════════ */
+.board-shell {
+  background: linear-gradient(135deg, #3a1e08, #1c0e04, #3a1e08);
+  padding: 14px; border-radius: 6px;
+  border: 2px solid var(--gold-dim);
+  box-shadow:
+    0 0 0 1px rgba(200,146,42,0.12),
+    0 8px 40px rgba(0,0,0,0.8),
+    0 0 60px rgba(0,0,0,0.5),
+    inset 0 0 20px rgba(0,0,0,0.4);
+  position: relative;
+}
+.board-shell::before {
+  content: '';
+  position: absolute; inset: 5px;
+  border: 1px solid rgba(200,146,42,0.18);
+  border-radius: 3px; pointer-events: none;
+}
+
+.board-with-coords { display: flex; flex-direction: column; }
+.coord-row { display: flex; align-items: center; }
+.coord-files { display: flex; margin-left: 22px; }
+.coord-label {
+  font-family: var(--font-ui); font-size: 0.54rem;
+  color: var(--gold-dim); text-align: center; user-select: none;
+}
+.coord-rank { width: 20px; display: flex; align-items: center; justify-content: center; }
+.coord-file { display: flex; align-items: center; justify-content: center; }
+
+/* Squares */
+.sq {
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; position: relative;
+  transition: filter 0.08s;
+  user-select: none;
+  width: var(--sq-size); height: var(--sq-size);
+}
+.sq.light { background: var(--sq-light); }
+.sq.dark  { background: var(--sq-dark); }
+
+.sq.selected  { background: var(--sq-hl-l) !important; }
+.sq.dark.selected { background: var(--sq-hl-d) !important; }
+.sq.in-check  { background: var(--sq-check) !important; }
+.sq.last-from { box-shadow: inset 0 0 0 3px rgba(200,200,60,0.5); }
+.sq.last-to   { box-shadow: inset 0 0 0 3px rgba(200,200,60,0.7); }
+
+.sq:hover { filter: brightness(1.12); }
+
+.sq.move-hint::after {
+  content: ''; position: absolute;
+  width: 30%; height: 30%; border-radius: 50%;
+  background: var(--sq-move); pointer-events: none; z-index: 3;
+}
+.sq.capture-hint::after {
+  content: ''; position: absolute; inset: 2px;
+  border: 3px solid var(--sq-cap); border-radius: 2px;
+  pointer-events: none; z-index: 3;
+}
+
+/* Piece wrapper */
+.pw {
+  position: relative; z-index: 2; pointer-events: none;
+  transition: transform 0.12s;
+  display: flex; align-items: flex-end; justify-content: center;
+  width: var(--piece-size); height: var(--piece-size);
+}
+.sq:hover .pw { transform: scale(1.1) translateY(-3px); }
+
+/* ═══════════════════════════════════════════════════
+   BOTTOM PANELS
+═══════════════════════════════════════════════════ */
+.bottom-area {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+@media (max-width: 560px) {
+  .bottom-area { grid-template-columns: 1fr; }
+}
+
+.move-log-panel { padding: 10px 12px; }
+.move-log-title {
+  font-family: var(--font-ui); font-size: 0.62rem;
+  color: var(--gold-dim); letter-spacing: 0.15em;
+  text-transform: uppercase; margin-bottom: 6px;
+}
+.move-log {
+  max-height: 120px; overflow-y: auto;
+  display: flex; flex-wrap: wrap; gap: 2px;
+  align-content: flex-start;
+}
+.ml-num { font-family: var(--font-ui); font-size: 0.64rem; color: var(--gold-dim); }
+.ml-w   { font-family: var(--font-ui); font-size: 0.64rem; color: var(--cream2); }
+.ml-b   { font-family: var(--font-ui); font-size: 0.64rem; color: var(--cream3); }
+.ml-sep { color: var(--gold-dim); font-size: 0.64rem; }
+
+.legend-panel { padding: 10px 12px; }
+.legend-title {
+  font-family: var(--font-ui); font-size: 0.62rem;
+  color: var(--gold-dim); letter-spacing: 0.15em;
+  text-transform: uppercase; margin-bottom: 8px;
+}
+.legend-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
+}
+.legend-item {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 2px;
+}
+.legend-name {
+  font-family: var(--font-ui); font-size: 0.5rem;
+  color: var(--cream3); letter-spacing: 0.06em;
+  text-align: center;
+}
+
+/* ═══════════════════════════════════════════════════
+   RULES PANEL (collapsible)
+═══════════════════════════════════════════════════ */
+.rules-panel {
+  width: 100%; padding: 14px 18px;
+  font-size: 0.88rem; line-height: 1.65;
+  display: none;
+}
+.rules-panel.open { display: block; }
+.rules-panel h3 {
+  font-family: var(--font-ui); color: var(--gold2);
+  font-size: 0.9rem; margin-bottom: 10px; letter-spacing: 0.1em;
+}
+.rules-panel ul { padding-left: 16px; color: var(--cream2); }
+.rules-panel li { margin-bottom: 5px; }
+.hl { color: var(--gold2); font-weight: 600; }
+
+/* ═══════════════════════════════════════════════════
+   OVERLAY (game over / promotion)
+═══════════════════════════════════════════════════ */
+.overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.88);
+  z-index: 200; align-items: center; justify-content: center;
+}
+.overlay.show { display: flex; }
+.overlay-box {
+  background: linear-gradient(160deg, var(--navy2), var(--navy3));
+  border: 2px solid var(--gold);
+  border-radius: 8px; padding: 40px 48px;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(200,146,42,0.3), 0 20px 60px rgba(0,0,0,0.6);
+  max-width: 380px; width: 90%;
+  animation: overlay-in 0.35s ease-out;
+}
+@keyframes overlay-in {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+.overlay-box h2 {
+  font-family: var(--font-title); font-size: 1.8rem;
+  color: var(--gold2); margin-bottom: 10px;
+  text-shadow: 0 0 20px rgba(200,146,42,0.5);
+}
+.overlay-box p { font-size: 1.05rem; color: var(--cream2); margin-bottom: 22px; }
+
+/* Promotion picker */
+.promo-picks { display: flex; gap: 12px; justify-content: center; margin-bottom: 8px; }
+.promo-btn {
+  cursor: pointer; border: 2px solid var(--gold-dim);
+  border-radius: 4px; padding: 4px;
+  background: rgba(0,0,0,0.3); transition: all 0.15s;
+}
+.promo-btn:hover { border-color: var(--gold2); transform: scale(1.1); }
+
+/* ═══════════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════════ */
+.site-footer {
+  width: 100%; text-align: center;
+  padding: 16px; margin-top: auto;
+  border-top: 1px solid rgba(200,146,42,0.12);
+  font-family: var(--font-ui); font-size: 0.58rem;
+  color: var(--gold-dim); letter-spacing: 0.16em;
+}
+
+/* ═══════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════ */
+@media (max-width: 500px) {
+  :root { --sq-size: 38px; --piece-size: 32px; }
+  .site-title { font-size: 1.4rem; }
+  .board-shell { padding: 8px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ── Header ── -->
+<header class="site-header">
+  <div class="header-ornament">
+    <div class="ornament-line"></div>
+    <span class="ornament-icon">⚔</span>
+    <div class="ornament-line"></div>
+  </div>
+  <h1 class="site-title">Dukes Chess</h1>
+  <p class="site-tagline">The Power of the Shield &nbsp;·&nbsp; © 1993 Kooch and Gooch Games (Inc. not active)</p>
+</header>
+
+<!-- ── Main game layout ── -->
+<main class="game-layout">
+
+  <!-- Top control bar -->
+  <div class="panel top-panel">
+    <div class="mode-selector">
+      <span class="selector-label">Mode</span>
+      <button class="seg-btn active" id="btn2p" onclick="setMode(&#39;2p&#39;)">Two Players</button>
+      <button class="seg-btn" id="btnCpu" onclick="setMode(&#39;cpu&#39;)">vs Computer</button>
+      <span class="selector-label" id="diffLabel" style="display:none;margin-left:8px">Level</span>
+      <button class="seg-btn" id="d1" onclick="setDiff(1)" style="display:none">Easy</button>
+      <button class="seg-btn active" id="d2" onclick="setDiff(2)" style="display:none">Medium</button>
+      <button class="seg-btn" id="d3" onclick="setDiff(3)" style="display:none">Hard</button>
+    </div>
+    <div class="action-btns">
+      <button class="btn" onclick="newGame()">⚔ New Game</button>
+      <button class="btn" onclick="undoMove()">↩ Undo</button>
+      <button class="btn" onclick="toggleRules()">📜 Rules</button>
+    </div>
+  </div>
+
+  <!-- Status bar -->
+  <div class="panel status-panel">
+    <div>
+      <div class="status-turn" id="statusTurn">White's Turn</div>
+      <div class="status-check" id="statusCheck" style="display: none;">⚠ CHECK ⚠</div>
+    </div>
+    <div class="clock-area">
+      <div class="clock active" id="clockW" title="White&#39;s time">∞</div>
+      <div class="clock" id="clockB" title="Black&#39;s time">∞</div>
+      <button class="seg-btn" id="timerBtn" onclick="cycleTimer()" title="Set timer">⏱ Off</button>
+    </div>
+    <div>
+      <div class="thinking" id="thinkingMsg">⚙ Thinking…</div>
+      <div class="diff-display" id="diffDisplay"></div>
+    </div>
+  </div>
+
+  <!-- Black captures -->
+  <div class="captures-bar" id="capBlack">
+    <span class="cap-label">Black captured:</span>
+    <span class="material-score" id="matBlack"></span>
+  </div>
+
+  <!-- Board -->
+  <div class="board-shell">
+    <div class="board-with-coords">
+      <div class="coord-row">
+        <div style="width:22px"></div>
+        <div class="coord-files" id="fileLabelsTop"><div class="coord-label coord-file" style="width: 60px;">a</div><div class="coord-label coord-file" style="width: 60px;">b</div><div class="coord-label coord-file" style="width: 60px;">c</div><div class="coord-label coord-file" style="width: 60px;">d</div><div class="coord-label coord-file" style="width: 60px;">e</div><div class="coord-label coord-file" style="width: 60px;">f</div><div class="coord-label coord-file" style="width: 60px;">g</div><div class="coord-label coord-file" style="width: 60px;">h</div><div class="coord-label coord-file" style="width: 60px;">i</div></div>
+      </div>
+      <div id="rankRows"><div class="coord-row"><div class="coord-label coord-rank" style="width: 20px;">9</div><div style="display: flex;"><div class="sq light" data-r="0" data-c="0"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="grb" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#6a5038"></stop>
+      <stop offset="40%" stop-color="#2a2018"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <radialgradient id="gmrb" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#4a3828"></stop>
+      <stop offset="60%" stop-color="#1a1410"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <filter id="shrb" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.7)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shrb)">
+    <ellipse cx="26" cy="46" rx="12" ry="4" fill="url(#gmrb)" stroke="#0a0806" stroke-width="0.8"></ellipse>
+    <rect x="17" y="38" width="18" height="8" rx="1.5" fill="url(#grb)" stroke="#0a0806" stroke-width="0.8"></rect>
+    <rect x="19" y="18" width="14" height="22" rx="1" fill="url(#grb)" stroke="#0a0806" stroke-width="0.8"></rect>
+    <rect x="16" y="14" width="20" height="6" rx="1" fill="url(#gmrb)" stroke="#0a0806" stroke-width="0.8"></rect>
+    <rect x="15" y="8" width="5" height="8" rx="1" fill="url(#grb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <rect x="23.5" y="8" width="5" height="8" rx="1" fill="url(#grb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <rect x="32" y="8" width="5" height="8" rx="1" fill="url(#grb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <ellipse cx="22" cy="22" rx="3" ry="2" fill="#6a5038" opacity="0.3"></ellipse>
+  </g></svg></div></div><div class="sq dark" data-r="0" data-c="1"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gbb" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#6a5038"></stop>
+      <stop offset="40%" stop-color="#2a2018"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <radialgradient id="gmbb" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#4a3828"></stop>
+      <stop offset="60%" stop-color="#1a1410"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <filter id="shbb" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.7)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shbb)">
+    <ellipse cx="26" cy="46" rx="12" ry="4" fill="url(#gmbb)" stroke="#0a0806" stroke-width="0.8"></ellipse>
+    <rect x="18" y="38" width="16" height="8" rx="1.5" fill="url(#gbb)" stroke="#0a0806" stroke-width="0.8"></rect>
+    <rect x="20" y="32" width="12" height="7" rx="1" fill="url(#gbb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <ellipse cx="26" cy="26" rx="7" ry="8" fill="url(#gbb)" stroke="#0a0806" stroke-width="0.8"></ellipse>
+    <ellipse cx="26" cy="17" rx="4" ry="5" fill="url(#gbb)" stroke="#0a0806" stroke-width="0.8"></ellipse>
+    <circle cx="26" cy="10" r="3" fill="url(#gmbb)" stroke="#0a0806" stroke-width="0.8"></circle>
+    <line x1="26" y1="6" x2="26" y2="8" stroke="#0a0806" stroke-width="1.2"></line>
+    <line x1="23" y1="7" x2="29" y2="7" stroke="#0a0806" stroke-width="1.2"></line>
+    <ellipse cx="23" cy="22" rx="2.5" ry="2" fill="#6a5038" opacity="0.3"></ellipse>
+  </g></svg></div></div><div class="sq light" data-r="0" data-c="2"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gnb" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#6a5038"></stop>
+      <stop offset="40%" stop-color="#2a2018"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <radialgradient id="gmnb" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#4a3828"></stop>
+      <stop offset="60%" stop-color="#1a1410"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <filter id="shnb" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.7)"></fedropshadow>
+    </filter>
+  </defs>
+  <g filter="url(#shnb)">
+    <!-- Base pedestal matching other pieces -->
+    <ellipse cx="26" cy="46" rx="12" ry="4" fill="url(#gmnb)" stroke="#0a0806" stroke-width="0.8"></ellipse>
+    <rect x="17" y="39" width="18" height="7" rx="1.5" fill="url(#gmnb)" stroke="#0a0806" stroke-width="0.8"></rect>
+    <!-- Neck pillar -->
+    <rect x="20" y="22" width="12" height="19" rx="2" fill="url(#gmnb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <!-- Knight head circle as backdrop -->
+    <ellipse cx="26" cy="18" rx="13" ry="11" fill="url(#gmnb)" stroke="#0a0806" stroke-width="0.9"></ellipse>
+    <!-- Unicode knight glyph centred on head area -->
+    <text x="26" y="27" text-anchor="middle" font-size="26" font-family="serif" fill="#f0e8d0" opacity="0.9" style="user-select:none">♞</text>
+    <!-- Highlight overlay for 3D feel -->
+    <ellipse cx="20" cy="12" rx="5" ry="3.5" fill="#6a5038" opacity="0.25" transform="rotate(-20,20,12)"></ellipse>
+  </g></svg></div></div><div class="sq dark" data-r="0" data-c="3"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gqb" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#6a5038"></stop>
+      <stop offset="40%" stop-color="#2a2018"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <radialgradient id="gmqb" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#4a3828"></stop>
+      <stop offset="60%" stop-color="#1a1410"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <filter id="shqb" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.7)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shqb)">
+    <ellipse cx="26" cy="46" rx="13" ry="4.5" fill="url(#gmqb)" stroke="#0a0806" stroke-width="0.8"></ellipse>
+    <rect x="16" y="36" width="20" height="10" rx="2" fill="url(#gqb)" stroke="#0a0806" stroke-width="0.8"></rect>
+    <path d="M18 36 Q20 28 26 26 Q32 28 34 36 Z" fill="url(#gqb)" stroke="#0a0806" stroke-width="0.8"></path>
+    <path d="M20 26 L18 14 L22 20 L26 12 L30 20 L34 14 L32 26 Z" fill="url(#gqb)" stroke="#0a0806" stroke-width="0.8"></path>
+    <circle cx="18" cy="13" r="2.5" fill="url(#gmqb)" stroke="#0a0806" stroke-width="0.7"></circle>
+    <circle cx="26" cy="11" r="2.5" fill="url(#gmqb)" stroke="#0a0806" stroke-width="0.7"></circle>
+    <circle cx="34" cy="13" r="2.5" fill="url(#gmqb)" stroke="#0a0806" stroke-width="0.7"></circle>
+    <ellipse cx="22" cy="30" rx="3" ry="2" fill="#6a5038" opacity="0.3"></ellipse>
+  </g></svg></div></div><div class="sq light" data-r="0" data-c="4"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gkb" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#6a5038"></stop>
+      <stop offset="40%" stop-color="#2a2018"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <radialgradient id="gmkb" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#4a3828"></stop>
+      <stop offset="60%" stop-color="#1a1410"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <filter id="shkb" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.7)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shkb)">
+    <ellipse cx="26" cy="46" rx="13" ry="4.5" fill="url(#gmkb)" stroke="#0a0806" stroke-width="0.8"></ellipse>
+    <rect x="16" y="36" width="20" height="10" rx="2" fill="url(#gkb)" stroke="#0a0806" stroke-width="0.8"></rect>
+    <path d="M18 36 Q20 28 26 26 Q32 28 34 36 Z" fill="url(#gkb)" stroke="#0a0806" stroke-width="0.8"></path>
+    <ellipse cx="26" cy="22" rx="9" ry="6" fill="url(#gkb)" stroke="#0a0806" stroke-width="0.8"></ellipse>
+    <rect x="23.5" y="8" width="5" height="14" rx="1" fill="url(#gmkb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <rect x="19" y="12.5" width="14" height="5" rx="1" fill="url(#gmkb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <ellipse cx="22" cy="26" rx="3" ry="2" fill="#6a5038" opacity="0.3"></ellipse>
+  </g></svg></div></div><div class="sq dark" data-r="0" data-c="5"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gdb" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#6a5038"></stop>
+      <stop offset="40%" stop-color="#2a2018"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <radialgradient id="gmdb" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#4a3828"></stop>
+      <stop offset="60%" stop-color="#1a1410"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <filter id="shdb" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.7)"></fedropshadow>
+    </filter>
+  </defs><defs>
+    <radialgradient id="sgdb" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#6a5038"></stop>
+      <stop offset="45%" stop-color="#2a2018"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <radialgradient id="sgidb" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#1a1410"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <filter id="sshdb" x="-25%" y="-25%" width="175%" height="175%">
+      <fedropshadow dx="1.5" dy="3" stdDeviation="2.5" flood-color="rgba(0,0,0,0.7)"></fedropshadow>
+    </filter>
+  </defs>
+  <g filter="url(#sshdb)">
+    <ellipse cx="26" cy="46" rx="13" ry="4.5" fill="#0d0a06" stroke="#0a0806" stroke-width="0.8"></ellipse>
+    <rect x="17" y="39" width="18" height="7" rx="2" fill="url(#sgdb)" stroke="#0a0806" stroke-width="0.8"></rect>
+    <path d="M26 8 L42 16 L42 30 Q42 42 26 50 Q10 42 10 30 L10 16 Z" fill="url(#sgdb)" stroke="#0a0806" stroke-width="1.2"></path>
+    <path d="M26 12 L38 19 L38 30 Q38 40 26 46 Q14 40 14 30 L14 19 Z" fill="none" stroke="#1a1410" stroke-width="1" opacity="0.7"></path>
+    <path d="M26 14 L36 20 L36 30 Q36 38 26 44 Q16 38 16 30 L16 20 Z" fill="url(#sgidb)" opacity="0.5"></path>
+    <g opacity="0.85">
+      <line x1="18" y1="18" x2="34" y2="38" stroke="#4a3828" stroke-width="2.2" stroke-linecap="round"></line>
+      <line x1="18" y1="18" x2="34" y2="38" stroke="#6a5840" stroke-width="0.7" stroke-linecap="round" opacity="0.5"></line>
+      <line x1="16" y1="22" x2="22" y2="16" stroke="#4a3828" stroke-width="2.5" stroke-linecap="round"></line>
+      <line x1="34" y1="18" x2="18" y2="38" stroke="#4a3828" stroke-width="2.2" stroke-linecap="round"></line>
+      <line x1="34" y1="18" x2="18" y2="38" stroke="#6a5840" stroke-width="0.7" stroke-linecap="round" opacity="0.5"></line>
+      <line x1="36" y1="22" x2="30" y2="16" stroke="#4a3828" stroke-width="2.5" stroke-linecap="round"></line>
+    </g>
+    <circle cx="26" cy="28" r="3" fill="#1a1410" stroke="#0a0806" stroke-width="0.8"></circle>
+    <circle cx="25" cy="27" r="1" fill="#6a5038" opacity="0.6"></circle>
+    <circle cx="20" cy="22" r="1.6" fill="#1a1410" stroke="#0a0806" stroke-width="0.5"></circle>
+    <circle cx="32" cy="22" r="1.6" fill="#1a1410" stroke="#0a0806" stroke-width="0.5"></circle>
+    <circle cx="20" cy="34" r="1.6" fill="#1a1410" stroke="#0a0806" stroke-width="0.5"></circle>
+    <circle cx="32" cy="34" r="1.6" fill="#1a1410" stroke="#0a0806" stroke-width="0.5"></circle>
+    <circle cx="26" cy="11" r="2.5" fill="#1a1410" stroke="#0a0806" stroke-width="0.8"></circle>
+    <circle cx="25.2" cy="10.2" r="0.9" fill="#6a5038" opacity="0.7"></circle>
+    <path d="M18 17 Q22 14 26 15 Q22 20 18 17 Z" fill="#6a5038" opacity="0.3"></path>
+  </g></svg></div></div><div class="sq light" data-r="0" data-c="6"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gbb" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#6a5038"></stop>
+      <stop offset="40%" stop-color="#2a2018"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <radialgradient id="gmbb" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#4a3828"></stop>
+      <stop offset="60%" stop-color="#1a1410"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <filter id="shbb" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.7)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shbb)">
+    <ellipse cx="26" cy="46" rx="12" ry="4" fill="url(#gmbb)" stroke="#0a0806" stroke-width="0.8"></ellipse>
+    <rect x="18" y="38" width="16" height="8" rx="1.5" fill="url(#gbb)" stroke="#0a0806" stroke-width="0.8"></rect>
+    <rect x="20" y="32" width="12" height="7" rx="1" fill="url(#gbb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <ellipse cx="26" cy="26" rx="7" ry="8" fill="url(#gbb)" stroke="#0a0806" stroke-width="0.8"></ellipse>
+    <ellipse cx="26" cy="17" rx="4" ry="5" fill="url(#gbb)" stroke="#0a0806" stroke-width="0.8"></ellipse>
+    <circle cx="26" cy="10" r="3" fill="url(#gmbb)" stroke="#0a0806" stroke-width="0.8"></circle>
+    <line x1="26" y1="6" x2="26" y2="8" stroke="#0a0806" stroke-width="1.2"></line>
+    <line x1="23" y1="7" x2="29" y2="7" stroke="#0a0806" stroke-width="1.2"></line>
+    <ellipse cx="23" cy="22" rx="2.5" ry="2" fill="#6a5038" opacity="0.3"></ellipse>
+  </g></svg></div></div><div class="sq dark" data-r="0" data-c="7"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gnb" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#6a5038"></stop>
+      <stop offset="40%" stop-color="#2a2018"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <radialgradient id="gmnb" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#4a3828"></stop>
+      <stop offset="60%" stop-color="#1a1410"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <filter id="shnb" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.7)"></fedropshadow>
+    </filter>
+  </defs>
+  <g filter="url(#shnb)">
+    <!-- Base pedestal matching other pieces -->
+    <ellipse cx="26" cy="46" rx="12" ry="4" fill="url(#gmnb)" stroke="#0a0806" stroke-width="0.8"></ellipse>
+    <rect x="17" y="39" width="18" height="7" rx="1.5" fill="url(#gmnb)" stroke="#0a0806" stroke-width="0.8"></rect>
+    <!-- Neck pillar -->
+    <rect x="20" y="22" width="12" height="19" rx="2" fill="url(#gmnb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <!-- Knight head circle as backdrop -->
+    <ellipse cx="26" cy="18" rx="13" ry="11" fill="url(#gmnb)" stroke="#0a0806" stroke-width="0.9"></ellipse>
+    <!-- Unicode knight glyph centred on head area -->
+    <text x="26" y="27" text-anchor="middle" font-size="26" font-family="serif" fill="#f0e8d0" opacity="0.9" style="user-select:none">♞</text>
+    <!-- Highlight overlay for 3D feel -->
+    <ellipse cx="20" cy="12" rx="5" ry="3.5" fill="#6a5038" opacity="0.25" transform="rotate(-20,20,12)"></ellipse>
+  </g></svg></div></div><div class="sq light" data-r="0" data-c="8"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="grb" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#6a5038"></stop>
+      <stop offset="40%" stop-color="#2a2018"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <radialgradient id="gmrb" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#4a3828"></stop>
+      <stop offset="60%" stop-color="#1a1410"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <filter id="shrb" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.7)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shrb)">
+    <ellipse cx="26" cy="46" rx="12" ry="4" fill="url(#gmrb)" stroke="#0a0806" stroke-width="0.8"></ellipse>
+    <rect x="17" y="38" width="18" height="8" rx="1.5" fill="url(#grb)" stroke="#0a0806" stroke-width="0.8"></rect>
+    <rect x="19" y="18" width="14" height="22" rx="1" fill="url(#grb)" stroke="#0a0806" stroke-width="0.8"></rect>
+    <rect x="16" y="14" width="20" height="6" rx="1" fill="url(#gmrb)" stroke="#0a0806" stroke-width="0.8"></rect>
+    <rect x="15" y="8" width="5" height="8" rx="1" fill="url(#grb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <rect x="23.5" y="8" width="5" height="8" rx="1" fill="url(#grb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <rect x="32" y="8" width="5" height="8" rx="1" fill="url(#grb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <ellipse cx="22" cy="22" rx="3" ry="2" fill="#6a5038" opacity="0.3"></ellipse>
+  </g></svg></div></div></div></div><div class="coord-row"><div class="coord-label coord-rank" style="width: 20px;">8</div><div style="display: flex;"><div class="sq dark" data-r="1" data-c="0"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gpb" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#6a5038"></stop>
+      <stop offset="40%" stop-color="#2a2018"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <radialgradient id="gmpb" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#4a3828"></stop>
+      <stop offset="60%" stop-color="#1a1410"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <filter id="shpb" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.7)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shpb)">
+    <ellipse cx="26" cy="46" rx="10" ry="3.5" fill="url(#gmpb)" stroke="#0a0806" stroke-width="0.8"></ellipse>
+    <rect x="21" y="39" width="10" height="7" rx="1" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <rect x="22.5" y="32" width="7" height="9" rx="1" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <ellipse cx="26" cy="27" rx="5" ry="4" fill="url(#gmpb)" stroke="#0a0806" stroke-width="0.7"></ellipse>
+    <circle cx="26" cy="20" r="6" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.8"></circle>
+    <ellipse cx="24" cy="18" rx="2" ry="1.5" fill="#6a5038" opacity="0.35"></ellipse>
+  </g></svg></div></div><div class="sq light" data-r="1" data-c="1"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gpb" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#6a5038"></stop>
+      <stop offset="40%" stop-color="#2a2018"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <radialgradient id="gmpb" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#4a3828"></stop>
+      <stop offset="60%" stop-color="#1a1410"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <filter id="shpb" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.7)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shpb)">
+    <ellipse cx="26" cy="46" rx="10" ry="3.5" fill="url(#gmpb)" stroke="#0a0806" stroke-width="0.8"></ellipse>
+    <rect x="21" y="39" width="10" height="7" rx="1" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <rect x="22.5" y="32" width="7" height="9" rx="1" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <ellipse cx="26" cy="27" rx="5" ry="4" fill="url(#gmpb)" stroke="#0a0806" stroke-width="0.7"></ellipse>
+    <circle cx="26" cy="20" r="6" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.8"></circle>
+    <ellipse cx="24" cy="18" rx="2" ry="1.5" fill="#6a5038" opacity="0.35"></ellipse>
+  </g></svg></div></div><div class="sq dark" data-r="1" data-c="2"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gpb" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#6a5038"></stop>
+      <stop offset="40%" stop-color="#2a2018"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <radialgradient id="gmpb" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#4a3828"></stop>
+      <stop offset="60%" stop-color="#1a1410"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <filter id="shpb" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.7)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shpb)">
+    <ellipse cx="26" cy="46" rx="10" ry="3.5" fill="url(#gmpb)" stroke="#0a0806" stroke-width="0.8"></ellipse>
+    <rect x="21" y="39" width="10" height="7" rx="1" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <rect x="22.5" y="32" width="7" height="9" rx="1" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <ellipse cx="26" cy="27" rx="5" ry="4" fill="url(#gmpb)" stroke="#0a0806" stroke-width="0.7"></ellipse>
+    <circle cx="26" cy="20" r="6" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.8"></circle>
+    <ellipse cx="24" cy="18" rx="2" ry="1.5" fill="#6a5038" opacity="0.35"></ellipse>
+  </g></svg></div></div><div class="sq light" data-r="1" data-c="3"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gpb" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#6a5038"></stop>
+      <stop offset="40%" stop-color="#2a2018"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <radialgradient id="gmpb" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#4a3828"></stop>
+      <stop offset="60%" stop-color="#1a1410"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <filter id="shpb" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.7)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shpb)">
+    <ellipse cx="26" cy="46" rx="10" ry="3.5" fill="url(#gmpb)" stroke="#0a0806" stroke-width="0.8"></ellipse>
+    <rect x="21" y="39" width="10" height="7" rx="1" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <rect x="22.5" y="32" width="7" height="9" rx="1" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <ellipse cx="26" cy="27" rx="5" ry="4" fill="url(#gmpb)" stroke="#0a0806" stroke-width="0.7"></ellipse>
+    <circle cx="26" cy="20" r="6" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.8"></circle>
+    <ellipse cx="24" cy="18" rx="2" ry="1.5" fill="#6a5038" opacity="0.35"></ellipse>
+  </g></svg></div></div><div class="sq dark" data-r="1" data-c="4"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gpb" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#6a5038"></stop>
+      <stop offset="40%" stop-color="#2a2018"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <radialgradient id="gmpb" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#4a3828"></stop>
+      <stop offset="60%" stop-color="#1a1410"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <filter id="shpb" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.7)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shpb)">
+    <ellipse cx="26" cy="46" rx="10" ry="3.5" fill="url(#gmpb)" stroke="#0a0806" stroke-width="0.8"></ellipse>
+    <rect x="21" y="39" width="10" height="7" rx="1" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <rect x="22.5" y="32" width="7" height="9" rx="1" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <ellipse cx="26" cy="27" rx="5" ry="4" fill="url(#gmpb)" stroke="#0a0806" stroke-width="0.7"></ellipse>
+    <circle cx="26" cy="20" r="6" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.8"></circle>
+    <ellipse cx="24" cy="18" rx="2" ry="1.5" fill="#6a5038" opacity="0.35"></ellipse>
+  </g></svg></div></div><div class="sq light" data-r="1" data-c="5"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gpb" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#6a5038"></stop>
+      <stop offset="40%" stop-color="#2a2018"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <radialgradient id="gmpb" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#4a3828"></stop>
+      <stop offset="60%" stop-color="#1a1410"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <filter id="shpb" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.7)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shpb)">
+    <ellipse cx="26" cy="46" rx="10" ry="3.5" fill="url(#gmpb)" stroke="#0a0806" stroke-width="0.8"></ellipse>
+    <rect x="21" y="39" width="10" height="7" rx="1" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <rect x="22.5" y="32" width="7" height="9" rx="1" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <ellipse cx="26" cy="27" rx="5" ry="4" fill="url(#gmpb)" stroke="#0a0806" stroke-width="0.7"></ellipse>
+    <circle cx="26" cy="20" r="6" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.8"></circle>
+    <ellipse cx="24" cy="18" rx="2" ry="1.5" fill="#6a5038" opacity="0.35"></ellipse>
+  </g></svg></div></div><div class="sq dark" data-r="1" data-c="6"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gpb" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#6a5038"></stop>
+      <stop offset="40%" stop-color="#2a2018"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <radialgradient id="gmpb" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#4a3828"></stop>
+      <stop offset="60%" stop-color="#1a1410"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <filter id="shpb" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.7)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shpb)">
+    <ellipse cx="26" cy="46" rx="10" ry="3.5" fill="url(#gmpb)" stroke="#0a0806" stroke-width="0.8"></ellipse>
+    <rect x="21" y="39" width="10" height="7" rx="1" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <rect x="22.5" y="32" width="7" height="9" rx="1" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <ellipse cx="26" cy="27" rx="5" ry="4" fill="url(#gmpb)" stroke="#0a0806" stroke-width="0.7"></ellipse>
+    <circle cx="26" cy="20" r="6" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.8"></circle>
+    <ellipse cx="24" cy="18" rx="2" ry="1.5" fill="#6a5038" opacity="0.35"></ellipse>
+  </g></svg></div></div><div class="sq light" data-r="1" data-c="7"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gpb" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#6a5038"></stop>
+      <stop offset="40%" stop-color="#2a2018"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <radialgradient id="gmpb" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#4a3828"></stop>
+      <stop offset="60%" stop-color="#1a1410"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <filter id="shpb" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.7)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shpb)">
+    <ellipse cx="26" cy="46" rx="10" ry="3.5" fill="url(#gmpb)" stroke="#0a0806" stroke-width="0.8"></ellipse>
+    <rect x="21" y="39" width="10" height="7" rx="1" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <rect x="22.5" y="32" width="7" height="9" rx="1" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <ellipse cx="26" cy="27" rx="5" ry="4" fill="url(#gmpb)" stroke="#0a0806" stroke-width="0.7"></ellipse>
+    <circle cx="26" cy="20" r="6" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.8"></circle>
+    <ellipse cx="24" cy="18" rx="2" ry="1.5" fill="#6a5038" opacity="0.35"></ellipse>
+  </g></svg></div></div><div class="sq dark" data-r="1" data-c="8"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gpb" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#6a5038"></stop>
+      <stop offset="40%" stop-color="#2a2018"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <radialgradient id="gmpb" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#4a3828"></stop>
+      <stop offset="60%" stop-color="#1a1410"></stop>
+      <stop offset="100%" stop-color="#0d0a06"></stop>
+    </radialgradient>
+    <filter id="shpb" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.7)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shpb)">
+    <ellipse cx="26" cy="46" rx="10" ry="3.5" fill="url(#gmpb)" stroke="#0a0806" stroke-width="0.8"></ellipse>
+    <rect x="21" y="39" width="10" height="7" rx="1" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <rect x="22.5" y="32" width="7" height="9" rx="1" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.7"></rect>
+    <ellipse cx="26" cy="27" rx="5" ry="4" fill="url(#gmpb)" stroke="#0a0806" stroke-width="0.7"></ellipse>
+    <circle cx="26" cy="20" r="6" fill="url(#gpb)" stroke="#0a0806" stroke-width="0.8"></circle>
+    <ellipse cx="24" cy="18" rx="2" ry="1.5" fill="#6a5038" opacity="0.35"></ellipse>
+  </g></svg></div></div></div></div><div class="coord-row"><div class="coord-label coord-rank" style="width: 20px;">7</div><div style="display: flex;"><div class="sq light" data-r="2" data-c="0"></div><div class="sq dark" data-r="2" data-c="1"></div><div class="sq light" data-r="2" data-c="2"></div><div class="sq dark" data-r="2" data-c="3"></div><div class="sq light" data-r="2" data-c="4"></div><div class="sq dark" data-r="2" data-c="5"></div><div class="sq light" data-r="2" data-c="6"></div><div class="sq dark" data-r="2" data-c="7"></div><div class="sq light" data-r="2" data-c="8"></div></div></div><div class="coord-row"><div class="coord-label coord-rank" style="width: 20px;">6</div><div style="display: flex;"><div class="sq dark" data-r="3" data-c="0"></div><div class="sq light" data-r="3" data-c="1"></div><div class="sq dark" data-r="3" data-c="2"></div><div class="sq light" data-r="3" data-c="3"></div><div class="sq dark" data-r="3" data-c="4"></div><div class="sq light" data-r="3" data-c="5"></div><div class="sq dark" data-r="3" data-c="6"></div><div class="sq light" data-r="3" data-c="7"></div><div class="sq dark" data-r="3" data-c="8"></div></div></div><div class="coord-row"><div class="coord-label coord-rank" style="width: 20px;">5</div><div style="display: flex;"><div class="sq light" data-r="4" data-c="0"></div><div class="sq dark" data-r="4" data-c="1"></div><div class="sq light" data-r="4" data-c="2"></div><div class="sq dark" data-r="4" data-c="3"></div><div class="sq light" data-r="4" data-c="4"></div><div class="sq dark" data-r="4" data-c="5"></div><div class="sq light" data-r="4" data-c="6"></div><div class="sq dark" data-r="4" data-c="7"></div><div class="sq light" data-r="4" data-c="8"></div></div></div><div class="coord-row"><div class="coord-label coord-rank" style="width: 20px;">4</div><div style="display: flex;"><div class="sq dark" data-r="5" data-c="0"></div><div class="sq light" data-r="5" data-c="1"></div><div class="sq dark" data-r="5" data-c="2"></div><div class="sq light" data-r="5" data-c="3"></div><div class="sq dark" data-r="5" data-c="4"></div><div class="sq light" data-r="5" data-c="5"></div><div class="sq dark" data-r="5" data-c="6"></div><div class="sq light" data-r="5" data-c="7"></div><div class="sq dark" data-r="5" data-c="8"></div></div></div><div class="coord-row"><div class="coord-label coord-rank" style="width: 20px;">3</div><div style="display: flex;"><div class="sq light" data-r="6" data-c="0"></div><div class="sq dark" data-r="6" data-c="1"></div><div class="sq light" data-r="6" data-c="2"></div><div class="sq dark" data-r="6" data-c="3"></div><div class="sq light" data-r="6" data-c="4"></div><div class="sq dark" data-r="6" data-c="5"></div><div class="sq light" data-r="6" data-c="6"></div><div class="sq dark" data-r="6" data-c="7"></div><div class="sq light" data-r="6" data-c="8"></div></div></div><div class="coord-row"><div class="coord-label coord-rank" style="width: 20px;">2</div><div style="display: flex;"><div class="sq dark" data-r="7" data-c="0"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gpw" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+      <stop offset="40%" stop-color="#e8dfc0"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <radialgradient id="gmpw" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#f8f0d8"></stop>
+      <stop offset="60%" stop-color="#c8b888"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <filter id="shpw" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.45)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shpw)">
+    <ellipse cx="26" cy="46" rx="10" ry="3.5" fill="url(#gmpw)" stroke="#706040" stroke-width="0.8"></ellipse>
+    <rect x="21" y="39" width="10" height="7" rx="1" fill="url(#gpw)" stroke="#706040" stroke-width="0.7"></rect>
+    <rect x="22.5" y="32" width="7" height="9" rx="1" fill="url(#gpw)" stroke="#706040" stroke-width="0.7"></rect>
+    <ellipse cx="26" cy="27" rx="5" ry="4" fill="url(#gmpw)" stroke="#706040" stroke-width="0.7"></ellipse>
+    <circle cx="26" cy="20" r="6" fill="url(#gpw)" stroke="#706040" stroke-width="0.8"></circle>
+    <ellipse cx="24" cy="18" rx="2" ry="1.5" fill="#ffffff" opacity="0.35"></ellipse>
+  </g></svg></div></div><div class="sq light" data-r="7" data-c="1"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gpw" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+      <stop offset="40%" stop-color="#e8dfc0"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <radialgradient id="gmpw" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#f8f0d8"></stop>
+      <stop offset="60%" stop-color="#c8b888"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <filter id="shpw" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.45)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shpw)">
+    <ellipse cx="26" cy="46" rx="10" ry="3.5" fill="url(#gmpw)" stroke="#706040" stroke-width="0.8"></ellipse>
+    <rect x="21" y="39" width="10" height="7" rx="1" fill="url(#gpw)" stroke="#706040" stroke-width="0.7"></rect>
+    <rect x="22.5" y="32" width="7" height="9" rx="1" fill="url(#gpw)" stroke="#706040" stroke-width="0.7"></rect>
+    <ellipse cx="26" cy="27" rx="5" ry="4" fill="url(#gmpw)" stroke="#706040" stroke-width="0.7"></ellipse>
+    <circle cx="26" cy="20" r="6" fill="url(#gpw)" stroke="#706040" stroke-width="0.8"></circle>
+    <ellipse cx="24" cy="18" rx="2" ry="1.5" fill="#ffffff" opacity="0.35"></ellipse>
+  </g></svg></div></div><div class="sq dark" data-r="7" data-c="2"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gpw" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+      <stop offset="40%" stop-color="#e8dfc0"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <radialgradient id="gmpw" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#f8f0d8"></stop>
+      <stop offset="60%" stop-color="#c8b888"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <filter id="shpw" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.45)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shpw)">
+    <ellipse cx="26" cy="46" rx="10" ry="3.5" fill="url(#gmpw)" stroke="#706040" stroke-width="0.8"></ellipse>
+    <rect x="21" y="39" width="10" height="7" rx="1" fill="url(#gpw)" stroke="#706040" stroke-width="0.7"></rect>
+    <rect x="22.5" y="32" width="7" height="9" rx="1" fill="url(#gpw)" stroke="#706040" stroke-width="0.7"></rect>
+    <ellipse cx="26" cy="27" rx="5" ry="4" fill="url(#gmpw)" stroke="#706040" stroke-width="0.7"></ellipse>
+    <circle cx="26" cy="20" r="6" fill="url(#gpw)" stroke="#706040" stroke-width="0.8"></circle>
+    <ellipse cx="24" cy="18" rx="2" ry="1.5" fill="#ffffff" opacity="0.35"></ellipse>
+  </g></svg></div></div><div class="sq light" data-r="7" data-c="3"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gpw" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+      <stop offset="40%" stop-color="#e8dfc0"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <radialgradient id="gmpw" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#f8f0d8"></stop>
+      <stop offset="60%" stop-color="#c8b888"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <filter id="shpw" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.45)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shpw)">
+    <ellipse cx="26" cy="46" rx="10" ry="3.5" fill="url(#gmpw)" stroke="#706040" stroke-width="0.8"></ellipse>
+    <rect x="21" y="39" width="10" height="7" rx="1" fill="url(#gpw)" stroke="#706040" stroke-width="0.7"></rect>
+    <rect x="22.5" y="32" width="7" height="9" rx="1" fill="url(#gpw)" stroke="#706040" stroke-width="0.7"></rect>
+    <ellipse cx="26" cy="27" rx="5" ry="4" fill="url(#gmpw)" stroke="#706040" stroke-width="0.7"></ellipse>
+    <circle cx="26" cy="20" r="6" fill="url(#gpw)" stroke="#706040" stroke-width="0.8"></circle>
+    <ellipse cx="24" cy="18" rx="2" ry="1.5" fill="#ffffff" opacity="0.35"></ellipse>
+  </g></svg></div></div><div class="sq dark" data-r="7" data-c="4"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gpw" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+      <stop offset="40%" stop-color="#e8dfc0"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <radialgradient id="gmpw" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#f8f0d8"></stop>
+      <stop offset="60%" stop-color="#c8b888"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <filter id="shpw" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.45)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shpw)">
+    <ellipse cx="26" cy="46" rx="10" ry="3.5" fill="url(#gmpw)" stroke="#706040" stroke-width="0.8"></ellipse>
+    <rect x="21" y="39" width="10" height="7" rx="1" fill="url(#gpw)" stroke="#706040" stroke-width="0.7"></rect>
+    <rect x="22.5" y="32" width="7" height="9" rx="1" fill="url(#gpw)" stroke="#706040" stroke-width="0.7"></rect>
+    <ellipse cx="26" cy="27" rx="5" ry="4" fill="url(#gmpw)" stroke="#706040" stroke-width="0.7"></ellipse>
+    <circle cx="26" cy="20" r="6" fill="url(#gpw)" stroke="#706040" stroke-width="0.8"></circle>
+    <ellipse cx="24" cy="18" rx="2" ry="1.5" fill="#ffffff" opacity="0.35"></ellipse>
+  </g></svg></div></div><div class="sq light" data-r="7" data-c="5"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gpw" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+      <stop offset="40%" stop-color="#e8dfc0"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <radialgradient id="gmpw" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#f8f0d8"></stop>
+      <stop offset="60%" stop-color="#c8b888"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <filter id="shpw" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.45)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shpw)">
+    <ellipse cx="26" cy="46" rx="10" ry="3.5" fill="url(#gmpw)" stroke="#706040" stroke-width="0.8"></ellipse>
+    <rect x="21" y="39" width="10" height="7" rx="1" fill="url(#gpw)" stroke="#706040" stroke-width="0.7"></rect>
+    <rect x="22.5" y="32" width="7" height="9" rx="1" fill="url(#gpw)" stroke="#706040" stroke-width="0.7"></rect>
+    <ellipse cx="26" cy="27" rx="5" ry="4" fill="url(#gmpw)" stroke="#706040" stroke-width="0.7"></ellipse>
+    <circle cx="26" cy="20" r="6" fill="url(#gpw)" stroke="#706040" stroke-width="0.8"></circle>
+    <ellipse cx="24" cy="18" rx="2" ry="1.5" fill="#ffffff" opacity="0.35"></ellipse>
+  </g></svg></div></div><div class="sq dark" data-r="7" data-c="6"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gpw" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+      <stop offset="40%" stop-color="#e8dfc0"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <radialgradient id="gmpw" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#f8f0d8"></stop>
+      <stop offset="60%" stop-color="#c8b888"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <filter id="shpw" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.45)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shpw)">
+    <ellipse cx="26" cy="46" rx="10" ry="3.5" fill="url(#gmpw)" stroke="#706040" stroke-width="0.8"></ellipse>
+    <rect x="21" y="39" width="10" height="7" rx="1" fill="url(#gpw)" stroke="#706040" stroke-width="0.7"></rect>
+    <rect x="22.5" y="32" width="7" height="9" rx="1" fill="url(#gpw)" stroke="#706040" stroke-width="0.7"></rect>
+    <ellipse cx="26" cy="27" rx="5" ry="4" fill="url(#gmpw)" stroke="#706040" stroke-width="0.7"></ellipse>
+    <circle cx="26" cy="20" r="6" fill="url(#gpw)" stroke="#706040" stroke-width="0.8"></circle>
+    <ellipse cx="24" cy="18" rx="2" ry="1.5" fill="#ffffff" opacity="0.35"></ellipse>
+  </g></svg></div></div><div class="sq light" data-r="7" data-c="7"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gpw" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+      <stop offset="40%" stop-color="#e8dfc0"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <radialgradient id="gmpw" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#f8f0d8"></stop>
+      <stop offset="60%" stop-color="#c8b888"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <filter id="shpw" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.45)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shpw)">
+    <ellipse cx="26" cy="46" rx="10" ry="3.5" fill="url(#gmpw)" stroke="#706040" stroke-width="0.8"></ellipse>
+    <rect x="21" y="39" width="10" height="7" rx="1" fill="url(#gpw)" stroke="#706040" stroke-width="0.7"></rect>
+    <rect x="22.5" y="32" width="7" height="9" rx="1" fill="url(#gpw)" stroke="#706040" stroke-width="0.7"></rect>
+    <ellipse cx="26" cy="27" rx="5" ry="4" fill="url(#gmpw)" stroke="#706040" stroke-width="0.7"></ellipse>
+    <circle cx="26" cy="20" r="6" fill="url(#gpw)" stroke="#706040" stroke-width="0.8"></circle>
+    <ellipse cx="24" cy="18" rx="2" ry="1.5" fill="#ffffff" opacity="0.35"></ellipse>
+  </g></svg></div></div><div class="sq dark" data-r="7" data-c="8"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gpw" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+      <stop offset="40%" stop-color="#e8dfc0"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <radialgradient id="gmpw" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#f8f0d8"></stop>
+      <stop offset="60%" stop-color="#c8b888"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <filter id="shpw" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.45)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shpw)">
+    <ellipse cx="26" cy="46" rx="10" ry="3.5" fill="url(#gmpw)" stroke="#706040" stroke-width="0.8"></ellipse>
+    <rect x="21" y="39" width="10" height="7" rx="1" fill="url(#gpw)" stroke="#706040" stroke-width="0.7"></rect>
+    <rect x="22.5" y="32" width="7" height="9" rx="1" fill="url(#gpw)" stroke="#706040" stroke-width="0.7"></rect>
+    <ellipse cx="26" cy="27" rx="5" ry="4" fill="url(#gmpw)" stroke="#706040" stroke-width="0.7"></ellipse>
+    <circle cx="26" cy="20" r="6" fill="url(#gpw)" stroke="#706040" stroke-width="0.8"></circle>
+    <ellipse cx="24" cy="18" rx="2" ry="1.5" fill="#ffffff" opacity="0.35"></ellipse>
+  </g></svg></div></div></div></div><div class="coord-row"><div class="coord-label coord-rank" style="width: 20px;">1</div><div style="display: flex;"><div class="sq light" data-r="8" data-c="0"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="grw" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+      <stop offset="40%" stop-color="#e8dfc0"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <radialgradient id="gmrw" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#f8f0d8"></stop>
+      <stop offset="60%" stop-color="#c8b888"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <filter id="shrw" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.45)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shrw)">
+    <ellipse cx="26" cy="46" rx="12" ry="4" fill="url(#gmrw)" stroke="#706040" stroke-width="0.8"></ellipse>
+    <rect x="17" y="38" width="18" height="8" rx="1.5" fill="url(#grw)" stroke="#706040" stroke-width="0.8"></rect>
+    <rect x="19" y="18" width="14" height="22" rx="1" fill="url(#grw)" stroke="#706040" stroke-width="0.8"></rect>
+    <rect x="16" y="14" width="20" height="6" rx="1" fill="url(#gmrw)" stroke="#706040" stroke-width="0.8"></rect>
+    <rect x="15" y="8" width="5" height="8" rx="1" fill="url(#grw)" stroke="#706040" stroke-width="0.7"></rect>
+    <rect x="23.5" y="8" width="5" height="8" rx="1" fill="url(#grw)" stroke="#706040" stroke-width="0.7"></rect>
+    <rect x="32" y="8" width="5" height="8" rx="1" fill="url(#grw)" stroke="#706040" stroke-width="0.7"></rect>
+    <ellipse cx="22" cy="22" rx="3" ry="2" fill="#ffffff" opacity="0.3"></ellipse>
+  </g></svg></div></div><div class="sq dark" data-r="8" data-c="1"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gbw" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+      <stop offset="40%" stop-color="#e8dfc0"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <radialgradient id="gmbw" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#f8f0d8"></stop>
+      <stop offset="60%" stop-color="#c8b888"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <filter id="shbw" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.45)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shbw)">
+    <ellipse cx="26" cy="46" rx="12" ry="4" fill="url(#gmbw)" stroke="#706040" stroke-width="0.8"></ellipse>
+    <rect x="18" y="38" width="16" height="8" rx="1.5" fill="url(#gbw)" stroke="#706040" stroke-width="0.8"></rect>
+    <rect x="20" y="32" width="12" height="7" rx="1" fill="url(#gbw)" stroke="#706040" stroke-width="0.7"></rect>
+    <ellipse cx="26" cy="26" rx="7" ry="8" fill="url(#gbw)" stroke="#706040" stroke-width="0.8"></ellipse>
+    <ellipse cx="26" cy="17" rx="4" ry="5" fill="url(#gbw)" stroke="#706040" stroke-width="0.8"></ellipse>
+    <circle cx="26" cy="10" r="3" fill="url(#gmbw)" stroke="#706040" stroke-width="0.8"></circle>
+    <line x1="26" y1="6" x2="26" y2="8" stroke="#706040" stroke-width="1.2"></line>
+    <line x1="23" y1="7" x2="29" y2="7" stroke="#706040" stroke-width="1.2"></line>
+    <ellipse cx="23" cy="22" rx="2.5" ry="2" fill="#ffffff" opacity="0.3"></ellipse>
+  </g></svg></div></div><div class="sq light" data-r="8" data-c="2"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gnw" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+      <stop offset="40%" stop-color="#e8dfc0"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <radialgradient id="gmnw" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#f8f0d8"></stop>
+      <stop offset="60%" stop-color="#c8b888"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <filter id="shnw" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.45)"></fedropshadow>
+    </filter>
+  </defs>
+  <g filter="url(#shnw)">
+    <!-- Base pedestal matching other pieces -->
+    <ellipse cx="26" cy="46" rx="12" ry="4" fill="url(#gmnw)" stroke="#706040" stroke-width="0.8"></ellipse>
+    <rect x="17" y="39" width="18" height="7" rx="1.5" fill="url(#gnw)" stroke="#706040" stroke-width="0.8"></rect>
+    <!-- Neck pillar -->
+    <rect x="20" y="22" width="12" height="19" rx="2" fill="url(#gnw)" stroke="#706040" stroke-width="0.7"></rect>
+    <!-- Knight head circle as backdrop -->
+    <ellipse cx="26" cy="18" rx="13" ry="11" fill="url(#gnw)" stroke="#706040" stroke-width="0.9"></ellipse>
+    <!-- Unicode knight glyph centred on head area -->
+    <text x="26" y="27" text-anchor="middle" font-size="26" font-family="serif" fill="#5a4820" opacity="0.85" style="user-select:none">♘</text>
+    <!-- Highlight overlay for 3D feel -->
+    <ellipse cx="20" cy="12" rx="5" ry="3.5" fill="#ffffff" opacity="0.25" transform="rotate(-20,20,12)"></ellipse>
+  </g></svg></div></div><div class="sq dark" data-r="8" data-c="3"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gqw" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+      <stop offset="40%" stop-color="#e8dfc0"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <radialgradient id="gmqw" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#f8f0d8"></stop>
+      <stop offset="60%" stop-color="#c8b888"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <filter id="shqw" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.45)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shqw)">
+    <ellipse cx="26" cy="46" rx="13" ry="4.5" fill="url(#gmqw)" stroke="#706040" stroke-width="0.8"></ellipse>
+    <rect x="16" y="36" width="20" height="10" rx="2" fill="url(#gqw)" stroke="#706040" stroke-width="0.8"></rect>
+    <path d="M18 36 Q20 28 26 26 Q32 28 34 36 Z" fill="url(#gqw)" stroke="#706040" stroke-width="0.8"></path>
+    <path d="M20 26 L18 14 L22 20 L26 12 L30 20 L34 14 L32 26 Z" fill="url(#gqw)" stroke="#706040" stroke-width="0.8"></path>
+    <circle cx="18" cy="13" r="2.5" fill="url(#gmqw)" stroke="#706040" stroke-width="0.7"></circle>
+    <circle cx="26" cy="11" r="2.5" fill="url(#gmqw)" stroke="#706040" stroke-width="0.7"></circle>
+    <circle cx="34" cy="13" r="2.5" fill="url(#gmqw)" stroke="#706040" stroke-width="0.7"></circle>
+    <ellipse cx="22" cy="30" rx="3" ry="2" fill="#ffffff" opacity="0.3"></ellipse>
+  </g></svg></div></div><div class="sq light" data-r="8" data-c="4"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gkw" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+      <stop offset="40%" stop-color="#e8dfc0"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <radialgradient id="gmkw" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#f8f0d8"></stop>
+      <stop offset="60%" stop-color="#c8b888"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <filter id="shkw" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.45)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shkw)">
+    <ellipse cx="26" cy="46" rx="13" ry="4.5" fill="url(#gmkw)" stroke="#706040" stroke-width="0.8"></ellipse>
+    <rect x="16" y="36" width="20" height="10" rx="2" fill="url(#gkw)" stroke="#706040" stroke-width="0.8"></rect>
+    <path d="M18 36 Q20 28 26 26 Q32 28 34 36 Z" fill="url(#gkw)" stroke="#706040" stroke-width="0.8"></path>
+    <ellipse cx="26" cy="22" rx="9" ry="6" fill="url(#gkw)" stroke="#706040" stroke-width="0.8"></ellipse>
+    <rect x="23.5" y="8" width="5" height="14" rx="1" fill="url(#gmkw)" stroke="#706040" stroke-width="0.7"></rect>
+    <rect x="19" y="12.5" width="14" height="5" rx="1" fill="url(#gmkw)" stroke="#706040" stroke-width="0.7"></rect>
+    <ellipse cx="22" cy="26" rx="3" ry="2" fill="#ffffff" opacity="0.3"></ellipse>
+  </g></svg></div></div><div class="sq dark" data-r="8" data-c="5"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gdw" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+      <stop offset="40%" stop-color="#e8dfc0"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <radialgradient id="gmdw" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#f8f0d8"></stop>
+      <stop offset="60%" stop-color="#c8b888"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <filter id="shdw" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.45)"></fedropshadow>
+    </filter>
+  </defs><defs>
+    <radialgradient id="sgdw" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+      <stop offset="45%" stop-color="#e8dfc0"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <radialgradient id="sgidw" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#c8b888"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <filter id="sshdw" x="-25%" y="-25%" width="175%" height="175%">
+      <fedropshadow dx="1.5" dy="3" stdDeviation="2.5" flood-color="rgba(0,0,0,0.45)"></fedropshadow>
+    </filter>
+  </defs>
+  <g filter="url(#sshdw)">
+    <ellipse cx="26" cy="46" rx="13" ry="4.5" fill="#a09060" stroke="#706040" stroke-width="0.8"></ellipse>
+    <rect x="17" y="39" width="18" height="7" rx="2" fill="url(#sgdw)" stroke="#706040" stroke-width="0.8"></rect>
+    <path d="M26 8 L42 16 L42 30 Q42 42 26 50 Q10 42 10 30 L10 16 Z" fill="url(#sgdw)" stroke="#706040" stroke-width="1.2"></path>
+    <path d="M26 12 L38 19 L38 30 Q38 40 26 46 Q14 40 14 30 L14 19 Z" fill="none" stroke="#c8b888" stroke-width="1" opacity="0.7"></path>
+    <path d="M26 14 L36 20 L36 30 Q36 38 26 44 Q16 38 16 30 L16 20 Z" fill="url(#sgidw)" opacity="0.5"></path>
+    <g opacity="0.85">
+      <line x1="18" y1="18" x2="34" y2="38" stroke="#888070" stroke-width="2.2" stroke-linecap="round"></line>
+      <line x1="18" y1="18" x2="34" y2="38" stroke="#c8c0a8" stroke-width="0.7" stroke-linecap="round" opacity="0.5"></line>
+      <line x1="16" y1="22" x2="22" y2="16" stroke="#888070" stroke-width="2.5" stroke-linecap="round"></line>
+      <line x1="34" y1="18" x2="18" y2="38" stroke="#888070" stroke-width="2.2" stroke-linecap="round"></line>
+      <line x1="34" y1="18" x2="18" y2="38" stroke="#c8c0a8" stroke-width="0.7" stroke-linecap="round" opacity="0.5"></line>
+      <line x1="36" y1="22" x2="30" y2="16" stroke="#888070" stroke-width="2.5" stroke-linecap="round"></line>
+    </g>
+    <circle cx="26" cy="28" r="3" fill="#c8b888" stroke="#706040" stroke-width="0.8"></circle>
+    <circle cx="25" cy="27" r="1" fill="#ffffff" opacity="0.6"></circle>
+    <circle cx="20" cy="22" r="1.6" fill="#c8b888" stroke="#706040" stroke-width="0.5"></circle>
+    <circle cx="32" cy="22" r="1.6" fill="#c8b888" stroke="#706040" stroke-width="0.5"></circle>
+    <circle cx="20" cy="34" r="1.6" fill="#c8b888" stroke="#706040" stroke-width="0.5"></circle>
+    <circle cx="32" cy="34" r="1.6" fill="#c8b888" stroke="#706040" stroke-width="0.5"></circle>
+    <circle cx="26" cy="11" r="2.5" fill="#c8b888" stroke="#706040" stroke-width="0.8"></circle>
+    <circle cx="25.2" cy="10.2" r="0.9" fill="#ffffff" opacity="0.7"></circle>
+    <path d="M18 17 Q22 14 26 15 Q22 20 18 17 Z" fill="#ffffff" opacity="0.3"></path>
+  </g></svg></div></div><div class="sq light" data-r="8" data-c="6"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gbw" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+      <stop offset="40%" stop-color="#e8dfc0"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <radialgradient id="gmbw" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#f8f0d8"></stop>
+      <stop offset="60%" stop-color="#c8b888"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <filter id="shbw" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.45)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shbw)">
+    <ellipse cx="26" cy="46" rx="12" ry="4" fill="url(#gmbw)" stroke="#706040" stroke-width="0.8"></ellipse>
+    <rect x="18" y="38" width="16" height="8" rx="1.5" fill="url(#gbw)" stroke="#706040" stroke-width="0.8"></rect>
+    <rect x="20" y="32" width="12" height="7" rx="1" fill="url(#gbw)" stroke="#706040" stroke-width="0.7"></rect>
+    <ellipse cx="26" cy="26" rx="7" ry="8" fill="url(#gbw)" stroke="#706040" stroke-width="0.8"></ellipse>
+    <ellipse cx="26" cy="17" rx="4" ry="5" fill="url(#gbw)" stroke="#706040" stroke-width="0.8"></ellipse>
+    <circle cx="26" cy="10" r="3" fill="url(#gmbw)" stroke="#706040" stroke-width="0.8"></circle>
+    <line x1="26" y1="6" x2="26" y2="8" stroke="#706040" stroke-width="1.2"></line>
+    <line x1="23" y1="7" x2="29" y2="7" stroke="#706040" stroke-width="1.2"></line>
+    <ellipse cx="23" cy="22" rx="2.5" ry="2" fill="#ffffff" opacity="0.3"></ellipse>
+  </g></svg></div></div><div class="sq dark" data-r="8" data-c="7"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="gnw" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+      <stop offset="40%" stop-color="#e8dfc0"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <radialgradient id="gmnw" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#f8f0d8"></stop>
+      <stop offset="60%" stop-color="#c8b888"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <filter id="shnw" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.45)"></fedropshadow>
+    </filter>
+  </defs>
+  <g filter="url(#shnw)">
+    <!-- Base pedestal matching other pieces -->
+    <ellipse cx="26" cy="46" rx="12" ry="4" fill="url(#gmnw)" stroke="#706040" stroke-width="0.8"></ellipse>
+    <rect x="17" y="39" width="18" height="7" rx="1.5" fill="url(#gnw)" stroke="#706040" stroke-width="0.8"></rect>
+    <!-- Neck pillar -->
+    <rect x="20" y="22" width="12" height="19" rx="2" fill="url(#gnw)" stroke="#706040" stroke-width="0.7"></rect>
+    <!-- Knight head circle as backdrop -->
+    <ellipse cx="26" cy="18" rx="13" ry="11" fill="url(#gnw)" stroke="#706040" stroke-width="0.9"></ellipse>
+    <!-- Unicode knight glyph centred on head area -->
+    <text x="26" y="27" text-anchor="middle" font-size="26" font-family="serif" fill="#5a4820" opacity="0.85" style="user-select:none">♘</text>
+    <!-- Highlight overlay for 3D feel -->
+    <ellipse cx="20" cy="12" rx="5" ry="3.5" fill="#ffffff" opacity="0.25" transform="rotate(-20,20,12)"></ellipse>
+  </g></svg></div></div><div class="sq light" data-r="8" data-c="8"><div class="pw"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="50" height="50"><defs>
+    <radialgradient id="grw" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+      <stop offset="40%" stop-color="#e8dfc0"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <radialgradient id="gmrw" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#f8f0d8"></stop>
+      <stop offset="60%" stop-color="#c8b888"></stop>
+      <stop offset="100%" stop-color="#a09060"></stop>
+    </radialgradient>
+    <filter id="shrw" x="-20%" y="-20%" width="160%" height="160%">
+      <fedropshadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="rgba(0,0,0,0.45)"></fedropshadow>
+    </filter>
+  </defs><g filter="url(#shrw)">
+    <ellipse cx="26" cy="46" rx="12" ry="4" fill="url(#gmrw)" stroke="#706040" stroke-width="0.8"></ellipse>
+    <rect x="17" y="38" width="18" height="8" rx="1.5" fill="url(#grw)" stroke="#706040" stroke-width="0.8"></rect>
+    <rect x="19" y="18" width="14" height="22" rx="1" fill="url(#grw)" stroke="#706040" stroke-width="0.8"></rect>
+    <rect x="16" y="14" width="20" height="6" rx="1" fill="url(#gmrw)" stroke="#706040" stroke-width="0.8"></rect>
+    <rect x="15" y="8" width="5" height="8" rx="1" fill="url(#grw)" stroke="#706040" stroke-width="0.7"></rect>
+    <rect x="23.5" y="8" width="5" height="8" rx="1" fill="url(#grw)" stroke="#706040" stroke-width="0.7"></rect>
+    <rect x="32" y="8" width="5" height="8" rx="1" fill="url(#grw)" stroke="#706040" stroke-width="0.7"></rect>
+    <ellipse cx="22" cy="22" rx="3" ry="2" fill="#ffffff" opacity="0.3"></ellipse>
+  </g></svg></div></div></div></div></div>
+      <div class="coord-row">
+        <div style="width:22px"></div>
+        <div class="coord-files" id="fileLabelsBtm"><div class="coord-label coord-file" style="width: 60px;">a</div><div class="coord-label coord-file" style="width: 60px;">b</div><div class="coord-label coord-file" style="width: 60px;">c</div><div class="coord-label coord-file" style="width: 60px;">d</div><div class="coord-label coord-file" style="width: 60px;">e</div><div class="coord-label coord-file" style="width: 60px;">f</div><div class="coord-label coord-file" style="width: 60px;">g</div><div class="coord-label coord-file" style="width: 60px;">h</div><div class="coord-label coord-file" style="width: 60px;">i</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- White captures -->
+  <div class="captures-bar" id="capWhite"><span class="cap-label">White captured:</span><span class="material-score" id="matWhite"></span></div>
+
+  <!-- Bottom: move log + legend -->
+  <div class="bottom-area">
+    <div class="panel move-log-panel">
+      <div class="move-log-title">Move History</div>
+      <div class="move-log" id="moveLog"></div>
+    </div>
+    <div class="panel legend-panel">
+      <div class="legend-title">Pieces</div>
+      <div class="legend-grid" id="legendGrid"></div></div>
+    </div>
+  </div>
+
+  <!-- Rules -->
+  <div class="panel rules-panel" id="rulesPanel">
+    <h3>⚜ How to Play Dukes Chess</h3>
+    <ul>
+      <li>Standard chess rules apply on a <strong>9×9 board</strong>.</li>
+      <li>Back rank: Rook · Bishop · Knight · Queen · King · <span class="hl">Duke</span> · Bishop · Knight · Rook</li>
+      <li><span class="hl">Duke moves</span> like a Queen but <em>maximum 3 squares</em> in any direction.</li>
+      <li><span class="hl">Duke captures</span> only on square 2 or 3 — <em>not</em> the adjacent square.</li>
+      <li><span class="hl">Duke jumps</span> — cannot be blocked by any piece on squares 1 or 2.</li>
+      <li>Pawns promote on the opposite back rank (Queen, Rook, Bishop, or Knight).</li>
+      <li>Win by <strong>checkmate</strong>. Draw by stalemate or threefold repetition.</li>
+    </ul>
+    <p style="margin-top:10px;font-size:0.8rem;color:var(--gold-dim);font-style:italic;">
+      Invented 1993 · Released 1994 · International distribution pre-internet ·
+      Registered US Library of Congress · © Kooch and Gooch Games (Inc. not active) · Dukes Chess™
+    </p>
+  </div>
+
+</main>
+
+<!-- ── Game Over overlay ── -->
+<div class="overlay" id="overlayEnd">
+  <div class="overlay-box">
+    <h2 id="endTitle">Checkmate!</h2>
+    <p id="endMsg">White wins!</p>
+    <button class="btn" onclick="newGame();closeOverlay(&#39;overlayEnd&#39;)">⚔ Play Again</button>
+  </div>
+</div>
+
+<!-- ── Pawn Promotion overlay ── -->
+<div class="overlay" id="overlayPromo">
+  <div class="overlay-box">
+    <h2>Promotion!</h2>
+    <p>Choose your new piece:</p>
+    <div class="promo-picks" id="promoPicks"></div>
+  </div>
+</div>
+
+<!-- ── Footer ── -->
+<footer class="site-footer">
+  DUKES CHESS™ &nbsp;·&nbsp; THE POWER OF THE SHIELD &nbsp;·&nbsp;
+  © 1993 KOOCH AND GOOCH GAMES (INC. NOT ACTIVE) &nbsp;·&nbsp; ALL RIGHTS RESERVED
+</footer>
+
+</div><!-- .page -->
+
+<script>
+'use strict';
+// ═══════════════════════════════════════════════════════════
+//  CONSTANTS & GLOBALS
+// ═══════════════════════════════════════════════════════════
+const WHITE=1, BLACK=-1;
+const PAWN=1,KNIGHT=2,BISHOP=3,ROOK=4,QUEEN=5,KING=6,DUKE=7;
+const FILES='abcdefghi';
+const PIECE_NAMES={[PAWN]:'P',[KNIGHT]:'N',[BISHOP]:'B',[ROOK]:'R',[QUEEN]:'Q',[KING]:'K',[DUKE]:'D'};
+const PIECE_LABELS={[PAWN]:'Pawn',[KNIGHT]:'Knight',[BISHOP]:'Bishop',[ROOK]:'Rook',[QUEEN]:'Queen',[KING]:'King',[DUKE]:'Duke'};
+const PIECE_VAL={[PAWN]:100,[KNIGHT]:320,[BISHOP]:330,[ROOK]:500,[QUEEN]:900,[KING]:20000,[DUKE]:750};
+
+let board=[], turn=WHITE, selected=null, legalMoves=[];
+let history=[], capByWhite=[], capByBlack=[];
+let moveLog=[], inCheck=false, gameOver=false;
+let posHistory={}, lastFrom=null, lastTo=null;
+let promoCallback=null;
+
+// Mode
+let gameMode='2p', cpuColor=BLACK, difficulty=2;
+
+// Timer
+let timerMode=0; // 0=off, 1=5min, 2=10min, 3=15min
+const TIMER_OPTS=[0,300,600,900];
+const TIMER_LABELS=['Off','5 min','10 min','15 min'];
+let timeW=0, timeB=0, timerInterval=null;
+
+// ═══════════════════════════════════════════════════════════
+//  SVG PIECE LIBRARY
+// ═══════════════════════════════════════════════════════════
+function pal(isWhite) {
+  return isWhite
+    ? { base:'#e8dfc0',mid:'#c8b888',dark:'#a09060',light:'#f8f0d8',shine:'#ffffff',shadow:'rgba(0,0,0,0.45)',outline:'#706040' }
+    : { base:'#2a2018',mid:'#1a1410',dark:'#0d0a06',light:'#4a3828',shine:'#6a5038',shadow:'rgba(0,0,0,0.7)',outline:'#0a0806' };
+}
+
+function svgWrap(inner,w=52,h=52) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">${inner}</svg>`;
+}
+
+function defs(id,p) {
+  return `<defs>
+    <radialGradient id="g${id}" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="${p.shine}"/>
+      <stop offset="40%" stop-color="${p.base}"/>
+      <stop offset="100%" stop-color="${p.dark}"/>
+    </radialGradient>
+    <radialGradient id="gm${id}" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="${p.light}"/>
+      <stop offset="60%" stop-color="${p.mid}"/>
+      <stop offset="100%" stop-color="${p.dark}"/>
+    </radialGradient>
+    <filter id="sh${id}" x="-20%" y="-20%" width="160%" height="160%">
+      <feDropShadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="${p.shadow}"/>
+    </filter>
+  </defs>`;
+}
+
+function svgPawn(W) {
+  const id=W?'pw':'pb'; const p=pal(W);
+  return svgWrap(`${defs(id,p)}<g filter="url(#sh${id})">
+    <ellipse cx="26" cy="46" rx="10" ry="3.5" fill="url(#gm${id})" stroke="${p.outline}" stroke-width="0.8"/>
+    <rect x="21" y="39" width="10" height="7" rx="1" fill="url(#g${id})" stroke="${p.outline}" stroke-width="0.7"/>
+    <rect x="22.5" y="32" width="7" height="9" rx="1" fill="url(#g${id})" stroke="${p.outline}" stroke-width="0.7"/>
+    <ellipse cx="26" cy="27" rx="5" ry="4" fill="url(#gm${id})" stroke="${p.outline}" stroke-width="0.7"/>
+    <circle cx="26" cy="20" r="6" fill="url(#g${id})" stroke="${p.outline}" stroke-width="0.8"/>
+    <ellipse cx="24" cy="18" rx="2" ry="1.5" fill="${p.shine}" opacity="0.35"/>
+  </g>`);
+}
+
+function svgRook(W) {
+  const id=W?'rw':'rb'; const p=pal(W);
+  return svgWrap(`${defs(id,p)}<g filter="url(#sh${id})">
+    <ellipse cx="26" cy="46" rx="12" ry="4" fill="url(#gm${id})" stroke="${p.outline}" stroke-width="0.8"/>
+    <rect x="17" y="38" width="18" height="8" rx="1.5" fill="url(#g${id})" stroke="${p.outline}" stroke-width="0.8"/>
+    <rect x="19" y="18" width="14" height="22" rx="1" fill="url(#g${id})" stroke="${p.outline}" stroke-width="0.8"/>
+    <rect x="16" y="14" width="20" height="6" rx="1" fill="url(#gm${id})" stroke="${p.outline}" stroke-width="0.8"/>
+    <rect x="15" y="8" width="5" height="8" rx="1" fill="url(#g${id})" stroke="${p.outline}" stroke-width="0.7"/>
+    <rect x="23.5" y="8" width="5" height="8" rx="1" fill="url(#g${id})" stroke="${p.outline}" stroke-width="0.7"/>
+    <rect x="32" y="8" width="5" height="8" rx="1" fill="url(#g${id})" stroke="${p.outline}" stroke-width="0.7"/>
+    <ellipse cx="22" cy="22" rx="3" ry="2" fill="${p.shine}" opacity="0.3"/>
+  </g>`);
+}
+
+function svgKnight(W) {
+  const id=W?'nw':'nb'; const p=pal(W);
+  const eyeCol  = W ? p.dark   : '#c0a060';
+  const nostrCol= W ? p.dark   : '#c0a060';
+  return svgWrap(`${defs(id,p)}
+  <g filter="url(#sh${id})" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="26" cy="48" rx="13" ry="3.5" fill="url(#gm${id})" stroke="${p.outline}" stroke-width="0.8"/>
+    <rect x="16" y="41" width="20" height="7" rx="1.5" fill="url(#g${id})" stroke="${p.outline}" stroke-width="0.8"/>
+    <g transform="translate(3.5,2) scale(0.96)">
+      <path d="M 22,10 C 32.5,11 38.5,18 38,39 L 15,39 C 15,30 25,32.5 23,18"
+        fill="url(#g${id})" stroke="${p.outline}" stroke-width="1.2"/>
+      <path d="M 24,18 C 24.38,20.91 18.45,25.37 16,27 C 13,29 13.18,31.34 11,31 C 9.958,30.06 12.41,27.96 11,28 C 10,28 11.19,29.23 10,30 C 9,30 5.997,31 6,26 C 6,24 12,14 12,14 C 12,14 13.89,12.1 14,10.5 C 13.27,9.506 13.5,8.5 13.5,7.5 C 14.5,6.5 16.5,10 16.5,10 L 18.5,10 C 18.5,10 19.28,8.008 21,7 C 22,7 22,10 22,10"
+        fill="url(#g${id})" stroke="${p.outline}" stroke-width="1.2"/>
+      <path d="M 9.5,25.5 A 0.5,0.5 0 1 1 8.5,25.5 A 0.5,0.5 0 1 1 9.5,25.5 z"
+        fill="${nostrCol}" stroke="${nostrCol}" stroke-width="0.5"/>
+      <path d="M 15,15.5 A 0.5,1.5 0 1 1 14,15.5 A 0.5,1.5 0 1 1 15,15.5 z"
+        transform="matrix(0.866,0.5,-0.5,0.866,9.693,-5.173)"
+        fill="${eyeCol}" stroke="${eyeCol}" stroke-width="0.5"/>
+    </g>
+    <ellipse cx="26" cy="40" rx="0" ry="0" fill="none"/>
+  </g>`);
+}
+
+function svgBishop(W) {
+  const id=W?'bw':'bb'; const p=pal(W);
+  return svgWrap(`${defs(id,p)}<g filter="url(#sh${id})">
+    <ellipse cx="26" cy="46" rx="12" ry="4" fill="url(#gm${id})" stroke="${p.outline}" stroke-width="0.8"/>
+    <rect x="18" y="38" width="16" height="8" rx="1.5" fill="url(#g${id})" stroke="${p.outline}" stroke-width="0.8"/>
+    <rect x="20" y="32" width="12" height="7" rx="1" fill="url(#g${id})" stroke="${p.outline}" stroke-width="0.7"/>
+    <ellipse cx="26" cy="26" rx="7" ry="8" fill="url(#g${id})" stroke="${p.outline}" stroke-width="0.8"/>
+    <ellipse cx="26" cy="17" rx="4" ry="5" fill="url(#g${id})" stroke="${p.outline}" stroke-width="0.8"/>
+    <circle cx="26" cy="10" r="3" fill="url(#gm${id})" stroke="${p.outline}" stroke-width="0.8"/>
+    <line x1="26" y1="6" x2="26" y2="8" stroke="${p.outline}" stroke-width="1.2"/>
+    <line x1="23" y1="7" x2="29" y2="7" stroke="${p.outline}" stroke-width="1.2"/>
+    <ellipse cx="23" cy="22" rx="2.5" ry="2" fill="${p.shine}" opacity="0.3"/>
+  </g>`);
+}
+
+function svgQueen(W) {
+  const id=W?'qw':'qb'; const p=pal(W);
+  return svgWrap(`${defs(id,p)}<g filter="url(#sh${id})">
+    <ellipse cx="26" cy="46" rx="13" ry="4.5" fill="url(#gm${id})" stroke="${p.outline}" stroke-width="0.8"/>
+    <rect x="16" y="36" width="20" height="10" rx="2" fill="url(#g${id})" stroke="${p.outline}" stroke-width="0.8"/>
+    <path d="M18 36 Q20 28 26 26 Q32 28 34 36 Z" fill="url(#g${id})" stroke="${p.outline}" stroke-width="0.8"/>
+    <path d="M20 26 L18 14 L22 20 L26 12 L30 20 L34 14 L32 26 Z" fill="url(#g${id})" stroke="${p.outline}" stroke-width="0.8"/>
+    <circle cx="18" cy="13" r="2.5" fill="url(#gm${id})" stroke="${p.outline}" stroke-width="0.7"/>
+    <circle cx="26" cy="11" r="2.5" fill="url(#gm${id})" stroke="${p.outline}" stroke-width="0.7"/>
+    <circle cx="34" cy="13" r="2.5" fill="url(#gm${id})" stroke="${p.outline}" stroke-width="0.7"/>
+    <ellipse cx="22" cy="30" rx="3" ry="2" fill="${p.shine}" opacity="0.3"/>
+  </g>`);
+}
+
+function svgKing(W) {
+  const id=W?'kw':'kb'; const p=pal(W);
+  return svgWrap(`${defs(id,p)}<g filter="url(#sh${id})">
+    <ellipse cx="26" cy="46" rx="13" ry="4.5" fill="url(#gm${id})" stroke="${p.outline}" stroke-width="0.8"/>
+    <rect x="16" y="36" width="20" height="10" rx="2" fill="url(#g${id})" stroke="${p.outline}" stroke-width="0.8"/>
+    <path d="M18 36 Q20 28 26 26 Q32 28 34 36 Z" fill="url(#g${id})" stroke="${p.outline}" stroke-width="0.8"/>
+    <ellipse cx="26" cy="22" rx="9" ry="6" fill="url(#g${id})" stroke="${p.outline}" stroke-width="0.8"/>
+    <rect x="23.5" y="8" width="5" height="14" rx="1" fill="url(#gm${id})" stroke="${p.outline}" stroke-width="0.7"/>
+    <rect x="19" y="12.5" width="14" height="5" rx="1" fill="url(#gm${id})" stroke="${p.outline}" stroke-width="0.7"/>
+    <ellipse cx="22" cy="26" rx="3" ry="2" fill="${p.shine}" opacity="0.3"/>
+  </g>`);
+}
+
+function svgDuke(W) {
+  const id=W?'dw':'db'; const p=pal(W);
+  const sc=W?'#888070':'#4a3828';
+  const ss=W?'#c8c0a8':'#6a5840';
+  return svgWrap(`${defs(id,p)}<defs>
+    <radialGradient id="sg${id}" cx="35%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="${p.shine}"/>
+      <stop offset="45%" stop-color="${p.base}"/>
+      <stop offset="100%" stop-color="${p.dark}"/>
+    </radialGradient>
+    <radialGradient id="sgi${id}" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="${p.mid}"/>
+      <stop offset="100%" stop-color="${p.dark}"/>
+    </radialGradient>
+    <filter id="ssh${id}" x="-25%" y="-25%" width="175%" height="175%">
+      <feDropShadow dx="1.5" dy="3" stdDeviation="2.5" flood-color="${p.shadow}"/>
+    </filter>
+  </defs>
+  <g filter="url(#ssh${id})">
+    <ellipse cx="26" cy="46" rx="13" ry="4.5" fill="${p.dark}" stroke="${p.outline}" stroke-width="0.8"/>
+    <rect x="17" y="39" width="18" height="7" rx="2" fill="url(#sg${id})" stroke="${p.outline}" stroke-width="0.8"/>
+    <path d="M26 8 L42 16 L42 30 Q42 42 26 50 Q10 42 10 30 L10 16 Z" fill="url(#sg${id})" stroke="${p.outline}" stroke-width="1.2"/>
+    <path d="M26 12 L38 19 L38 30 Q38 40 26 46 Q14 40 14 30 L14 19 Z" fill="none" stroke="${p.mid}" stroke-width="1" opacity="0.7"/>
+    <path d="M26 14 L36 20 L36 30 Q36 38 26 44 Q16 38 16 30 L16 20 Z" fill="url(#sgi${id})" opacity="0.5"/>
+    <g opacity="0.85">
+      <line x1="18" y1="18" x2="34" y2="38" stroke="${sc}" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="18" y1="18" x2="34" y2="38" stroke="${ss}" stroke-width="0.7" stroke-linecap="round" opacity="0.5"/>
+      <line x1="16" y1="22" x2="22" y2="16" stroke="${sc}" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="34" y1="18" x2="18" y2="38" stroke="${sc}" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="34" y1="18" x2="18" y2="38" stroke="${ss}" stroke-width="0.7" stroke-linecap="round" opacity="0.5"/>
+      <line x1="36" y1="22" x2="30" y2="16" stroke="${sc}" stroke-width="2.5" stroke-linecap="round"/>
+    </g>
+    <circle cx="26" cy="28" r="3" fill="${p.mid}" stroke="${p.outline}" stroke-width="0.8"/>
+    <circle cx="25" cy="27" r="1" fill="${p.shine}" opacity="0.6"/>
+    <circle cx="20" cy="22" r="1.6" fill="${p.mid}" stroke="${p.outline}" stroke-width="0.5"/>
+    <circle cx="32" cy="22" r="1.6" fill="${p.mid}" stroke="${p.outline}" stroke-width="0.5"/>
+    <circle cx="20" cy="34" r="1.6" fill="${p.mid}" stroke="${p.outline}" stroke-width="0.5"/>
+    <circle cx="32" cy="34" r="1.6" fill="${p.mid}" stroke="${p.outline}" stroke-width="0.5"/>
+    <circle cx="26" cy="11" r="2.5" fill="${p.mid}" stroke="${p.outline}" stroke-width="0.8"/>
+    <circle cx="25.2" cy="10.2" r="0.9" fill="${p.shine}" opacity="0.7"/>
+    <path d="M18 17 Q22 14 26 15 Q22 20 18 17 Z" fill="${p.shine}" opacity="0.3"/>
+  </g>`);
+}
+
+function makePiece(type, color) {
+  const W = color===WHITE;
+  switch(type) {
+    case PAWN:   return svgPawn(W);
+    case KNIGHT: return svgKnight(W);
+    case BISHOP: return svgBishop(W);
+    case ROOK:   return svgRook(W);
+    case QUEEN:  return svgQueen(W);
+    case KING:   return svgKing(W);
+    case DUKE:   return svgDuke(W);
+    default: return '';
+  }
+}
+
+// Small glyphs for captures bar
+const GLYPHS={
+  [WHITE]:{[PAWN]:'♙',[KNIGHT]:'♘',[BISHOP]:'♗',[ROOK]:'♖',[QUEEN]:'♕',[KING]:'♔',[DUKE]:'🛡'},
+  [BLACK]:{[PAWN]:'♟',[KNIGHT]:'♞',[BISHOP]:'♝',[ROOK]:'♜',[QUEEN]:'♛',[KING]:'♚',[DUKE]:'🛡'}
+};
+
+// ═══════════════════════════════════════════════════════════
+//  GAME ENGINE
+// ═══════════════════════════════════════════════════════════
+function initBoard() {
+  board = Array.from({length:9}, ()=>Array(9).fill(null));
+  const BR = [ROOK,BISHOP,KNIGHT,QUEEN,KING,DUKE,BISHOP,KNIGHT,ROOK];
+  for(let c=0;c<9;c++) { board[0][c]={type:BR[c],color:BLACK}; board[1][c]={type:PAWN,color:BLACK}; }
+  for(let c=0;c<9;c++) { board[7][c]={type:PAWN,color:WHITE}; board[8][c]={type:BR[c],color:WHITE}; }
+}
+
+function inBounds(r,c){return r>=0&&r<9&&c>=0&&c<9;}
+
+function getRawMoves(r,c,brd) {
+  const p=brd[r][c]; if(!p) return [];
+  const {type,color}=p; const moves=[]; const fwd=color===WHITE?-1:1;
+  const slide=(dr,dc,max)=>{
+    for(let s=1;s<=max;s++){
+      const nr=r+dr*s,nc=c+dc*s;
+      if(!inBounds(nr,nc)) break;
+      if(brd[nr][nc]){ if(brd[nr][nc].color!==color) moves.push({row:nr,col:nc,cap:true}); break; }
+      moves.push({row:nr,col:nc,cap:false});
+    }
+  };
+  if(type===PAWN){
+    const nr1=r+fwd;
+    if(inBounds(nr1,c)&&!brd[nr1][c]){
+      moves.push({row:nr1,col:c,cap:false,pawn2:false});
+      const sr=color===WHITE?7:1;
+      if(r===sr&&!brd[r+fwd*2][c]) moves.push({row:r+fwd*2,col:c,cap:false,pawn2:true});
+    }
+    for(const dc of[-1,1]){
+      if(inBounds(nr1,c+dc)&&brd[nr1][c+dc]&&brd[nr1][c+dc].color!==color)
+        moves.push({row:nr1,col:c+dc,cap:true});
+    }
+  } else if(type===KNIGHT){
+    for(const[dr,dc]of[[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]]){
+      const nr=r+dr,nc=c+dc;
+      if(!inBounds(nr,nc)) continue;
+      if(!brd[nr][nc]) moves.push({row:nr,col:nc,cap:false});
+      else if(brd[nr][nc].color!==color) moves.push({row:nr,col:nc,cap:true});
+    }
+  } else if(type===BISHOP){ for(const[dr,dc]of[[-1,-1],[-1,1],[1,-1],[1,1]]) slide(dr,dc,8); }
+  else if(type===ROOK)  { for(const[dr,dc]of[[-1,0],[1,0],[0,-1],[0,1]]) slide(dr,dc,8); }
+  else if(type===QUEEN) { for(const[dr,dc]of[[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[-1,1],[1,-1],[1,1]]) slide(dr,dc,8); }
+  else if(type===KING)  {
+    for(const[dr,dc]of[[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[-1,1],[1,-1],[1,1]]){
+      const nr=r+dr,nc=c+dc;
+      if(!inBounds(nr,nc)) continue;
+      if(!brd[nr][nc]) moves.push({row:nr,col:nc,cap:false});
+      else if(brd[nr][nc].color!==color) moves.push({row:nr,col:nc,cap:true});
+    }
+  } else if(type===DUKE){
+    for(const[dr,dc]of[[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[-1,1],[1,-1],[1,1]]){
+      for(let s=1;s<=3;s++){
+        const nr=r+dr*s,nc=c+dc*s;
+        if(!inBounds(nr,nc)) break;
+        const t=brd[nr][nc];
+        if(t){ if(t.color!==color&&s>=2) moves.push({row:nr,col:nc,cap:true}); if(s===3) break; }
+        else moves.push({row:nr,col:nc,cap:false});
+      }
+    }
+  }
+  return moves;
+}
+
+function findKing(color,brd){
+  for(let r=0;r<9;r++) for(let c=0;c<9;c++)
+    if(brd[r][c]&&brd[r][c].type===KING&&brd[r][c].color===color) return{row:r,col:c};
+  return null;
+}
+
+function isAttacked(r,c,byColor,brd){
+  for(let sr=0;sr<9;sr++) for(let sc=0;sc<9;sc++){
+    const p=brd[sr][sc]; if(!p||p.color!==byColor) continue;
+    if(getRawMoves(sr,sc,brd).some(m=>m.row===r&&m.col===c)) return true;
+  }
+  return false;
+}
+
+function isInCheck(color,brd){
+  const k=findKing(color,brd); return k?isAttacked(k.row,k.col,-color,brd):false;
+}
+
+function applyMove(brd,fr,fc,tr,tc,promoType=null){
+  const nb=brd.map(row=>row.map(p=>p?{...p}:null));
+  nb[tr][tc]=nb[fr][fc]; nb[fr][fc]=null;
+  const mp=nb[tr][tc];
+  if(mp && mp.type===PAWN){
+    if(mp.color===WHITE&&tr===0) mp.type=promoType||QUEEN;
+    if(mp.color===BLACK&&tr===8) mp.type=promoType||QUEEN;
+  }
+  return nb;
+}
+
+function needsPromotion(fr,fc,tr,tc){
+  const p=board[fr][fc];
+  return p&&p.type===PAWN&&((p.color===WHITE&&tr===0)||(p.color===BLACK&&tr===8));
+}
+
+function getLegalMoves(r,c){
+  return getRawMoves(r,c,board).filter(mv=>{
+    const nb=applyMove(board,r,c,mv.row,mv.col);
+    return !isInCheck(board[r][c].color,nb);
+  });
+}
+
+function hasAnyMoves(color){
+  for(let r=0;r<9;r++) for(let c=0;c<9;c++){
+    const p=board[r][c];
+    if(!p||p.color!==color) continue;
+    if(getLegalMoves(r,c).length>0) return true;
+  }
+  return false;
+}
+
+function boardKey(brd){
+  return brd.map(r=>r.map(p=>p?p.type*p.color:0).join(',')).join('|');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  CLICK HANDLER
+// ═══════════════════════════════════════════════════════════
+function handleClick(row,col){
+  if(gameOver) return;
+  if(gameMode==='cpu'&&turn===cpuColor) return;
+
+  const p=board[row][col];
+  if(selected){
+    const mv=legalMoves.find(m=>m.row===row&&m.col===col);
+    if(mv){
+      if(needsPromotion(selected.row,selected.col,row,col)){
+        showPromotion(selected.row,selected.col,row,col);
+      } else {
+        doMove(selected.row,selected.col,row,col);
+      }
+      selected=null; legalMoves=[];
+      renderBoard(); return;
+    }
+    if(p&&p.color===turn){ selected={row,col}; legalMoves=getLegalMoves(row,col); renderBoard(); return; }
+    selected=null; legalMoves=[]; renderBoard(); return;
+  }
+  if(p&&p.color===turn){ selected={row,col}; legalMoves=getLegalMoves(row,col); renderBoard(); }
+}
+
+function showPromotion(fr,fc,tr,tc){
+  const color=board[fr][fc].color;
+  const picks=document.getElementById('promoPicks');
+  picks.innerHTML='';
+  [QUEEN,ROOK,BISHOP,KNIGHT].forEach(t=>{
+    const btn=document.createElement('div');
+    btn.className='promo-btn';
+    btn.innerHTML=resizeSVG(makePiece(t,color),44);
+    btn.onclick=()=>{ closeOverlay('overlayPromo'); doMove(fr,fc,tr,tc,t); };
+    picks.appendChild(btn);
+  });
+  document.getElementById('overlayPromo').classList.add('show');
+}
+
+function doMove(fr,fc,tr,tc,promoType=null){
+  const moving=board[fr][fc];
+  const captured=board[tr][tc];
+
+  history.push({
+    board:board.map(r=>r.map(p=>p?{...p}:null)),
+    turn, capByWhite:[...capByWhite], capByBlack:[...capByBlack],
+    moveLog:[...moveLog], lastFrom, lastTo, posHistory:{...posHistory},
+    timeW, timeB
+  });
+
+  const fromSq=FILES[fc]+(9-fr), toSq=FILES[tc]+(9-tr);
+  const cap=captured?'x':'-';
+  const notation=`${PIECE_NAMES[moving.type]}${fromSq}${cap}${toSq}${promoType?'='+PIECE_NAMES[promoType]:''}`;
+  moveLog.push({text:notation, color:turn===WHITE?'w':'b'});
+
+  if(captured){
+    if(turn===WHITE) capByWhite.push(captured);
+    else capByBlack.push(captured);
+  }
+
+  board=applyMove(board,fr,fc,tr,tc,promoType);
+  lastFrom={row:fr,col:fc}; lastTo={row:tr,col:tc};
+
+  // Repetition tracking
+  const key=boardKey(board);
+  posHistory[key]=(posHistory[key]||0)+1;
+
+  turn=-turn;
+  inCheck=isInCheck(turn,board);
+
+  // Check threefold repetition → draw
+  if((posHistory[key]||0)>=3){
+    gameOver=true;
+    setTimeout(()=>showEnd('Draw!','Threefold repetition.'),200);
+  } else if(!hasAnyMoves(turn)){
+    gameOver=true;
+    setTimeout(()=>showEnd(
+      inCheck?'Checkmate!':'Stalemate!',
+      inCheck?(turn===WHITE?'Black wins!':'White wins!'):'The game is a draw.'
+    ),200);
+  }
+
+  updateStatus(); renderCaptures(); renderMoveLogUI();
+  renderBoard();
+
+  if(gameMode==='cpu'&&!gameOver) setTimeout(triggerCpu,120);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  COMPUTER ENGINE — Minimax + Alpha-Beta
+// ═══════════════════════════════════════════════════════════
+const CENTER=[
+  [0,0,0,0,0,0,0,0,0],[0,1,1,1,1,1,1,1,0],[0,1,2,2,2,2,2,1,0],
+  [0,1,2,3,3,3,2,1,0],[0,1,2,3,4,3,2,1,0],[0,1,2,3,3,3,2,1,0],
+  [0,1,2,2,2,2,2,1,0],[0,1,1,1,1,1,1,1,0],[0,0,0,0,0,0,0,0,0]
+];
+
+function evalBoard(brd){
+  let score=0;
+  for(let r=0;r<9;r++) for(let c=0;c<9;c++){
+    const p=brd[r][c]; if(!p) continue;
+    let v=PIECE_VAL[p.type]||0;
+    v+=CENTER[r][c]*5;
+    if(p.type===PAWN) v+=(p.color===WHITE?(8-r):r)*8;
+    if(p.type===KNIGHT||p.type===BISHOP){
+      const br=p.color===WHITE?8:0; if(r!==br) v+=25;
+    }
+    if(p.type===DUKE){ const br=p.color===WHITE?8:0; if(r!==br) v+=20; }
+    if(p.type===QUEEN){
+      const br=p.color===WHITE?8:0;
+      if(r!==br){
+        let undv=0;
+        for(let cc=0;cc<9;cc++){
+          const bp=brd[br][cc];
+          if(bp&&bp.color===p.color&&(bp.type===KNIGHT||bp.type===BISHOP)) undv++;
+        }
+        if(undv>=3) v-=30;
+      }
+    }
+    score+=p.color===WHITE?v:-v;
+  }
+  // Mobility
+  let mw=0,mb=0;
+  for(let r=0;r<9;r++) for(let c=0;c<9;c++){
+    const p=brd[r][c]; if(!p) continue;
+    const m=getRawMoves(r,c,brd).length;
+    if(p.color===WHITE) mw+=m; else mb+=m;
+  }
+  return score+(mw-mb)*2;
+}
+
+function getAllMoves(color,brd){
+  const moves=[];
+  for(let r=0;r<9;r++) for(let c=0;c<9;c++){
+    const p=brd[r][c]; if(!p||p.color!==color) continue;
+    const raw=getRawMoves(r,c,brd).filter(mv=>{
+      const nb=applyMove(brd,r,c,mv.row,mv.col);
+      return !isInCheck(color,nb);
+    });
+    raw.forEach(mv=>moves.push({fr:r,fc:c,tr:mv.row,tc:mv.col}));
+  }
+  // Order: captures first
+  return moves.sort((a,b)=>{
+    const va=brd[a.tr][a.tc]?(PIECE_VAL[brd[a.tr][a.tc].type]||0):0;
+    const vb=brd[b.tr][b.tc]?(PIECE_VAL[brd[b.tr][b.tc].type]||0):0;
+    return vb-va;
+  });
+}
+
+// Transposition table for caching positions
+const ttable=new Map();
+
+function minimax(brd,depth,alpha,beta,maxing,repCount){
+  // Repetition penalty
+  const key=boardKey(brd);
+  const rep=repCount||0;
+  if(rep>=2) return 0; // draw value
+
+  const color=maxing?WHITE:BLACK;
+  const moves=getAllMoves(color,brd);
+
+  if(!moves.length) return isInCheck(color,brd)?(maxing?-50000:50000):0;
+  if(depth===0) return evalBoard(brd);
+
+  // Transposition table lookup
+  const ttKey=key+'|'+depth+'|'+(maxing?1:0);
+  if(ttable.has(ttKey)) return ttable.get(ttKey);
+
+  let result;
+  if(maxing){
+    let best=-Infinity;
+    for(const mv of moves){
+      const nb=applyMove(brd,mv.fr,mv.fc,mv.tr,mv.tc);
+      const nk=boardKey(nb);
+      const nrep=(repCount&&(posHistory[nk]||0))||0;
+      best=Math.max(best,minimax(nb,depth-1,alpha,beta,false,nrep));
+      alpha=Math.max(alpha,best);
+      if(beta<=alpha) break;
+    }
+    result=best;
+  } else {
+    let best=Infinity;
+    for(const mv of moves){
+      const nb=applyMove(brd,mv.fr,mv.fc,mv.tr,mv.tc);
+      const nk=boardKey(nb);
+      const nrep=(posHistory[nk]||0);
+      best=Math.min(best,minimax(nb,depth-1,alpha,beta,true,nrep));
+      beta=Math.min(beta,best);
+      if(beta<=alpha) break;
+    }
+    result=best;
+  }
+
+  if(ttable.size>80000) ttable.clear(); // prevent memory bloat
+  ttable.set(ttKey,result);
+  return result;
+}
+
+function getBestMove(){
+  const depth=[0,2,3,4][difficulty];
+  const moves=getAllMoves(cpuColor,board);
+  if(!moves.length) return null;
+  let bestScore=Infinity, best=moves[0];
+  for(const mv of moves){
+    const nb=applyMove(board,mv.fr,mv.fc,mv.tr,mv.tc);
+    const score=minimax(nb,depth-1,-Infinity,Infinity,true);
+    if(score<bestScore){ bestScore=score; best=mv; }
+  }
+  return best;
+}
+
+function triggerCpu(){
+  if(gameOver||turn!==cpuColor||gameMode!=='cpu') return;
+  $cls('thinkingMsg','add','show');
+  setTimeout(()=>{
+    const mv=getBestMove();
+    $cls('thinkingMsg','remove','show');
+    if(mv){
+      if(needsPromotion(mv.fr,mv.fc,mv.tr,mv.tc)){
+        doMove(mv.fr,mv.fc,mv.tr,mv.tc,QUEEN);
+      } else {
+        doMove(mv.fr,mv.fc,mv.tr,mv.tc);
+      }
+    }
+  },60);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  TIMER
+// ═══════════════════════════════════════════════════════════
+function cycleTimer(){
+  timerMode=(timerMode+1)%4;
+  $set('timerBtn','textContent','⏱ '+TIMER_LABELS[timerMode]);
+  stopTimer();
+  if(timerMode>0){
+    timeW=TIMER_OPTS[timerMode];
+    timeB=TIMER_OPTS[timerMode];
+    updateClocks();
+  } else {
+    $set('clockW','textContent','∞');
+    $set('clockB','textContent','∞');
+  }
+}
+
+function startTimer(){
+  if(timerMode===0||timerInterval) return;
+  timerInterval=setInterval(()=>{
+    if(gameOver){ stopTimer(); return; }
+    if(turn===WHITE){ timeW--; if(timeW<=0){ timeW=0; stopTimer(); flagFall(WHITE); } }
+    else             { timeB--; if(timeB<=0){ timeB=0; stopTimer(); flagFall(BLACK); } }
+    updateClocks();
+  },1000);
+}
+
+function stopTimer(){ if(timerInterval){ clearInterval(timerInterval); timerInterval=null; } }
+
+function flagFall(color){
+  gameOver=true;
+  const winner=color===WHITE?'Black':'White';
+  showEnd('Time!',`${winner} wins on time.`);
+}
+
+function updateClocks(){
+  const fmt=s=>{const m=Math.floor(s/60);const sec=s%60;return `${m}:${sec.toString().padStart(2,'0')}`;};
+  const cw=document.getElementById('clockW');
+  const cb=document.getElementById('clockB');
+  if(!cw||!cb) return;
+  cw.textContent=timerMode>0?fmt(timeW):'∞';
+  cb.textContent=timerMode>0?fmt(timeB):'∞';
+  cw.className='clock'+(turn===WHITE?' active':'')+(timeW<30&&timerMode>0?' low':'');
+  cb.className='clock'+(turn===BLACK?' active':'')+(timeB<30&&timerMode>0?' low':'');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  RENDERING
+// ═══════════════════════════════════════════════════════════
+function sqClass(r,c){ return(r+c)%2===0?'light':'dark'; }
+
+function resizeSVG(svgStr,size){
+  return svgStr
+    .replace(/width="\d+"/, `width="${size}"`)
+    .replace(/height="\d+"/, `height="${size}"`);
+}
+
+function buildBoardDOM(){
+  const sqSz=parseInt(getComputedStyle(document.documentElement).getPropertyValue('--sq-size'))||60;
+  const pSz =parseInt(getComputedStyle(document.documentElement).getPropertyValue('--piece-size'))||50;
+  window._pSz=pSz;
+
+  ['fileLabelsTop','fileLabelsBtm'].forEach(id=>{
+    const el=document.getElementById(id); el.innerHTML='';
+    'abcdefghi'.split('').forEach(f=>{
+      const d=document.createElement('div');
+      d.className='coord-label coord-file'; d.style.width=sqSz+'px'; d.textContent=f;
+      el.appendChild(d);
+    });
+  });
+
+  const rr=document.getElementById('rankRows'); rr.innerHTML='';
+  for(let r=0;r<9;r++){
+    const row=document.createElement('div'); row.className='coord-row';
+    const rl=document.createElement('div');
+    rl.className='coord-label coord-rank'; rl.style.width='20px'; rl.textContent=9-r;
+    row.appendChild(rl);
+    const gr=document.createElement('div'); gr.style.display='flex';
+    for(let c=0;c<9;c++){
+      const sq=document.createElement('div');
+      sq.className=`sq ${sqClass(r,c)}`; sq.dataset.r=r; sq.dataset.c=c;
+      sq.addEventListener('click',()=>handleClick(r,c));
+      gr.appendChild(sq);
+    }
+    row.appendChild(gr); rr.appendChild(row);
+  }
+
+  buildLegend(pSz);
+}
+
+function buildLegend(pSz){
+  const el=document.getElementById('legendGrid'); el.innerHTML='';
+  [[PAWN,'Pawn'],[KNIGHT,'Knight'],[BISHOP,'Bishop'],[ROOK,'Rook'],
+   [QUEEN,'Queen'],[KING,'King'],[DUKE,'Duke ⚜'],[0,'']].forEach(([t,name])=>{
+    const item=document.createElement('div'); item.className='legend-item';
+    if(t){
+      const sz=Math.round(pSz*0.6);
+      item.innerHTML=`<div>${resizeSVG(makePiece(t,WHITE),sz)}</div>`+
+        `<div class="legend-name">${name}</div>`;
+    }
+    el.appendChild(item);
+  });
+}
+
+function renderBoard(){
+  const pSz=window._pSz||50;
+  const rows=document.getElementById('rankRows').querySelectorAll('.coord-row');
+  for(let r=0;r<9;r++){
+    const sqs=rows[r].querySelectorAll('.sq');
+    for(let c=0;c<9;c++){
+      const sq=sqs[c]; sq.className=`sq ${sqClass(r,c)}`; sq.innerHTML='';
+      const p=board[r][c];
+      if(p){
+        const wrap=document.createElement('div'); wrap.className='pw';
+        wrap.innerHTML=resizeSVG(makePiece(p.type,p.color),pSz);
+        sq.appendChild(wrap);
+      }
+      if(selected&&selected.row===r&&selected.col===c) sq.classList.add('selected');
+      const mv=legalMoves.find(m=>m.row===r&&m.col===c);
+      if(mv) sq.classList.add(mv.cap?'capture-hint':'move-hint');
+      if(inCheck){ const k=findKing(turn,board); if(k&&k.row===r&&k.col===c) sq.classList.add('in-check'); }
+      if(lastFrom&&lastFrom.row===r&&lastFrom.col===c) sq.classList.add('last-from');
+      if(lastTo  &&lastTo.row===r  &&lastTo.col===c)   sq.classList.add('last-to');
+    }
+  }
+  if(timerMode>0) startTimer();
+  updateClocks();
+}
+
+function updateStatus(){
+  const st=document.getElementById('statusTurn');
+  const sc=document.getElementById('statusCheck');
+  const dd=document.getElementById('diffDisplay');
+  if(st) st.textContent=(turn===WHITE?'White':'Black')+"'s Turn";
+  if(sc) sc.style.display=inCheck&&!gameOver?'block':'none';
+  const diffs=['','Easy','Medium','Hard'];
+  if(dd) dd.textContent=gameMode==='cpu'?`Computer: ${diffs[difficulty]}`:'';
+}
+
+function renderCaptures(){
+  const render=(id,caps,matId)=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    const lblEl=el.querySelector('.cap-label');
+    const lbl=lblEl?lblEl.outerHTML:'';
+    el.innerHTML=lbl;
+    let mat=0;
+    caps.forEach(p=>{
+      const s=document.createElement('span'); s.className='cap-piece';
+      s.textContent=(GLYPHS[p.color]||{})[p.type]||'?';
+      el.appendChild(s);
+      mat+=PIECE_VAL[p.type]||0;
+    });
+    const ms=document.getElementById(matId);
+    if(!ms) return;
+    if(mat>0){ ms.textContent='+'+Math.round(mat/100); ms.className='material-score ahead'; }
+    else { ms.textContent=''; ms.className='material-score'; }
+  };
+  render('capWhite',capByWhite,'matWhite');
+  render('capBlack',capByBlack,'matBlack');
+}
+
+function renderMoveLogUI(){
+  const el=document.getElementById('moveLog'); if(!el) return; el.innerHTML='';
+  for(let i=0;i<moveLog.length;i+=2){
+    const n=document.createElement('span'); n.className='ml-num'; n.textContent=(i/2+1)+'.';
+    el.appendChild(n);
+    const w=document.createElement('span'); w.className='ml-w'; w.textContent=' '+moveLog[i].text;
+    el.appendChild(w);
+    if(moveLog[i+1]){
+      const b=document.createElement('span'); b.className='ml-b'; b.textContent=' '+moveLog[i+1].text;
+      el.appendChild(b);
+    }
+    const sp=document.createElement('span'); sp.className='ml-sep'; sp.textContent=' ';
+    el.appendChild(sp);
+  }
+  el.scrollTop=el.scrollHeight;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  CONTROLS
+// ═══════════════════════════════════════════════════════════
+
+// Safe DOM helper — never throws null reference
+function $id(id){ return document.getElementById(id); }
+function $set(id, prop, val){ const el=$id(id); if(el) el[prop]=val; }
+function $cls(id, method, ...args){ const el=$id(id); if(el) el.classList[method](...args); }
+
+function setMode(m){
+  gameMode=m;
+  $cls('btn2p','toggle','active',m==='2p');
+  $cls('btnCpu','toggle','active',m==='cpu');
+  ['diffLabel','d1','d2','d3'].forEach(id=>{
+    const el=$id(id); if(el) el.style.display=m==='cpu'?'':'none';
+  });
+  newGame();
+}
+
+function setDiff(d){
+  difficulty=d;
+  ['d1','d2','d3'].forEach((id,i)=>$cls(id,'toggle','active',i+1===d));
+  newGame();
+}
+
+function newGame(){
+  stopTimer();
+  initBoard();
+  turn=WHITE; selected=null; legalMoves=[];
+  history=[]; capByWhite=[]; capByBlack=[];
+  moveLog=[]; inCheck=false; gameOver=false;
+  posHistory={}; lastFrom=null; lastTo=null;
+  ttable.clear();
+  if(timerMode>0){ timeW=TIMER_OPTS[timerMode]; timeB=TIMER_OPTS[timerMode]; }
+  renderBoard(); updateStatus(); renderCaptures(); renderMoveLogUI();
+  $cls('overlayEnd','remove','show');
+  ['d1','d2','d3'].forEach((id,i)=>$cls(id,'toggle','active',i+1===difficulty));
+}
+
+function undoMove(){
+  if(!history.length) return;
+  stopTimer();
+  let undos=gameMode==='cpu'&&history.length>=2?2:1;
+  for(let i=0;i<undos;i++){
+    if(!history.length) break;
+    const prev=history.pop();
+    board=prev.board; turn=prev.turn;
+    capByWhite=prev.capByWhite; capByBlack=prev.capByBlack;
+    moveLog=prev.moveLog; lastFrom=prev.lastFrom; lastTo=prev.lastTo;
+    posHistory=prev.posHistory; timeW=prev.timeW; timeB=prev.timeB;
+  }
+  selected=null; legalMoves=[];
+  inCheck=isInCheck(turn,board); gameOver=false;
+  renderBoard(); updateStatus(); renderCaptures(); renderMoveLogUI();
+}
+
+function toggleRules(){
+  $cls('rulesPanel','toggle','open');
+}
+
+function showEnd(title,msg){
+  $set('endTitle','textContent',title);
+  $set('endMsg','textContent',msg);
+  $cls('overlayEnd','add','show');
+}
+
+function closeOverlay(id){
+  $cls(id,'remove','show');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════
+window.addEventListener('load',()=>{
+  buildBoardDOM();
+  difficulty = 2;
+  // Mark medium as active without triggering newGame twice
+  ['d1','d2','d3'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(el) el.classList.toggle('active',i+1===difficulty);
+  });
+  newGame();
+});
+</script>
+
+
+</body></html>
